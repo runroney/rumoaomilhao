@@ -1318,18 +1318,6 @@
     .toast-msg.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
     /* Player de Áudio YouTube oculto (sincronizado com timestamps oficiais) */
-    #ytAudioHost {
-      position: fixed;
-      width: 1px;
-      height: 1px;
-      bottom: 0;
-      right: 0;
-      opacity: 0.001;
-      pointer-events: none;
-      z-index: -1;
-      overflow: hidden;
-    }
-
     /* =========================================================================
        AJUSTES RESPONSIVOS DEDICADOS PARA CELULAR (VERTICAL E HORIZONTAL)
        ========================================================================= */
@@ -1762,7 +1750,6 @@
   </style>
 </head>
 <body>
-  <div id="ytAudioHost" aria-hidden="true"><div id="ytPlayerFrame"></div></div>
   <div class="tv-stage" id="tvStage" aria-hidden="true">
     <div class="spotlight spotlight-left"></div>
     <div class="spotlight spotlight-right"></div>
@@ -2407,182 +2394,43 @@
 
       /* =========================================================================
          3. MOTOR DE ÁUDIO WEB AUDIO API — TRILHA SHOW DO MILHÃO (METALES + SUSPENSE)
+            100% IDÊNTICO E SINCRONIZADO NO PC E NO CELULAR (ANDROID / iOS)
          ========================================================================= */
-      /* =========================================================================
-         3. MOTOR DE ÁUDIO SINCRONIZADO COM O VÍDEO OFICIAL DO YOUTUBE (X9ZnclOL78o)
-            + FALLBACK INSTANTÂNEO EM WEB AUDIO API
-         ========================================================================= */
-      const YT_VIDEO_ID = 'X9ZnclOL78o';
-
-      // Mapeamento exato dos momentos e timestamps do vídeo Show do Milhão | CD-ROM
-      const YT_CUE_MAP = {
-        // Vinhetas e trilhas principais
-        abertura_inicio:    { start: 0,   end: 5   },   // [00:00:00] Começo ("Vai começar o Show do Milhão")
-        trilha_abertura:    { start: 5,   end: 45  },   // [00:00:05] Trilha de abertura clássica
-        suspense_1:         { start: 130, end: 185 },   // [00:02:10] Trilha de suspense 1 (rodada inicial)
-        suspense_2:         { start: 215, end: 270 },   // [00:03:35] Trilha de suspense 2 (tensão intermediária)
-        suspense_3:         { start: 330, end: 400 },   // [00:05:30] Trilha de suspense 3 (perguntas altas / milhão)
-
-        // Anúncios de rodadas e valores das perguntas (1 a 16)
-        rodada_1:           { start: 622, end: 632 },   // [00:10:22] 1ª Rodada - 1 mil reais
-        rodada_2:           { start: 633, end: 646 },   // [00:10:33] 2ª Rodada - 10 mil reais
-        rodada_3:           { start: 647, end: 657 },   // [00:10:47] 3ª Rodada - 100 mil reais
-        val_1000:           { start: 658, end: 668 },   // [00:10:58] Pergunta valendo 1 mil
-        val_2000:           { start: 669, end: 678 },   // [00:11:09] Pergunta valendo 2 mil
-        val_3000:           { start: 679, end: 688 },   // [00:11:19] Pergunta valendo 3 mil
-        val_4000:           { start: 689, end: 697 },   // [00:11:29] Pergunta valendo 4 mil
-        val_5000:           { start: 698, end: 705 },   // [00:11:38] Pergunta valendo 5 mil
-        val_10000:          { start: 706, end: 714 },   // [00:11:46] Pergunta valendo 10 mil
-        val_20000:          { start: 715, end: 725 },   // [00:11:55] Pergunta valendo 20 mil
-        val_30000:          { start: 726, end: 734 },   // [00:12:06] Pergunta valendo 30 mil
-        val_40000:          { start: 735, end: 743 },   // [00:12:15] Pergunta valendo 40 mil
-        val_50000:          { start: 744, end: 752 },   // [00:12:24] Pergunta valendo 50 mil
-        val_100000:         { start: 753, end: 762 },   // [00:12:33] Pergunta valendo 100 mil
-        val_200000:         { start: 763, end: 772 },   // [00:12:43] Pergunta valendo 200 mil
-        val_300000:         { start: 773, end: 781 },   // [00:12:53] Pergunta valendo 300 mil
-        val_400000:         { start: 782, end: 791 },   // [00:13:02] Pergunta valendo 400 mil
-        val_500000:         { start: 792, end: 803 },   // [00:13:12] Pergunta valendo 500 mil
-        val_1000000:        { start: 804, end: 814 },   // [00:13:24] 1 Milhão de Reais - Arrisca Tudo
-
-        // Falas e efeitos de interação em cada momento
-        participante:       { start: 815, end: 824 },   // [00:13:35] Vamos conhecer agora o nosso participante / Boa sorte
-        tem_certeza:        { start: 824, end: 828.5 }, // [00:13:44] Você tem certeza?
-        ajuda_convidados:   { start: 832, end: 841 },   // [00:13:52] Vai pedir ajuda aos convidados
-        ajuda_placas:       { start: 842, end: 858 },   // [00:14:02] Opinião dos colegas / placas
-        ajuda_cartas:       { start: 859, end: 867 },   // [00:14:19] Tirando a carta / Tira um três pelo menos
-        esta_certo_disso:   { start: 868, end: 876 },   // [00:14:28] Está certo disso? Posso perguntar?
-        certa_resposta:     { start: 881, end: 884.5 }, // [00:14:41] Certa resposta!
-        que_pena_errou:     { start: 885, end: 889.5 }, // [00:14:45] Que pena... você errou!
-        tempo_acabou:       { start: 890, end: 896 },   // [00:14:50] Seu tempo acabou
-        entregar_ouro:      { start: 897, end: 901.5 }, // [00:14:57] Posso entregar o ouro?
-        ganhou_milhao:      { start: 911, end: 916.5 }, // [00:15:11] Ganhou 1 milhão!
-        moedas_caindo:      { start: 917, end: 922 },   // [00:15:17] Efeito de moedas caindo
-        tchau_pessoal:      { start: 1004, end: 1009 }  // [00:16:44] Tchau pessoal!
-      };
-
       class StudioAudioEngine {
         constructor() {
           this.ctx = null;
           this.masterGain = null;
           this.bgmGain = null;
           this.sfxGain = null;
+          this.compressor = null;
+          this.reverbNode = null;
+          this.reverbSend = null;
           this.isMuted = false;
-          this.volume = 0.78;
-          this.bgmInterval = null;
+          this.volume = 0.72;
+          this.bgmSchedulerTimer = null;
+          this.nextNoteTime = 0;
           this.bgmStep = 0;
           this.bgmIntensity = 1;
-          this.suspenseOsc = null;
-          this.suspenseSubOsc = null;
+          this.suspenseNodes = [];
           this.isPlaying = false;
-
-          // YouTube IFrame Player API
-          this.ytPlayer = null;
-          this.ytReady = false;
-          this.ytMonitorTimer = null;
-          this.activeCueEnd = null;
-          this.activeLoopCue = null;
-          this.onCueEndedCallback = null;
-          this._initYouTubeAPI();
+          this.isDucked = false;
         }
 
-        _initYouTubeAPI() {
-          window.onYouTubeIframeAPIReady = () => {
-            if (!window.YT || !window.YT.Player) return;
-            this.ytPlayer = new window.YT.Player('ytPlayerFrame', {
-              height: '80',
-              width: '120',
-              videoId: YT_VIDEO_ID,
-              playerVars: {
-                autoplay: 0,
-                controls: 0,
-                disablekb: 1,
-                fs: 0,
-                iv_load_policy: 3,
-                modestbranding: 1,
-                playsinline: 1,
-                rel: 0,
-                origin: window.location.origin || undefined
-              },
-              events: {
-                onReady: () => {
-                  this.ytReady = true;
-                  this.ytPlayer.setVolume(Math.round(this.volume * 100));
-                  if (this.isMuted) this.ytPlayer.mute();
-                },
-                onError: () => {
-                  this.ytReady = false;
-                }
-              }
-            });
-          };
-
-          if (!document.getElementById('yt-iframe-api-script')) {
-            const tag = document.createElement('script');
-            tag.id = 'yt-iframe-api-script';
-            tag.src = 'https://www.youtube.com/iframe_api';
-            document.head.appendChild(tag);
-          }
-        }
-
-        playYouTubeCue(cueKey, { loop = false, onEnd = null } = {}) {
-          const cue = YT_CUE_MAP[cueKey];
-          if (!cue || !this.ytReady || !this.ytPlayer || this.isMuted) {
-            if (onEnd) setTimeout(onEnd, 350);
-            return false;
-          }
-          try {
-            if (this.ytMonitorTimer) {
-              clearInterval(this.ytMonitorTimer);
-              this.ytMonitorTimer = null;
+        _buildStudioReverb(ctx) {
+          const sampleRate = ctx.sampleRate;
+          const length = Math.floor(sampleRate * 1.45);
+          const impulse = ctx.createBuffer(2, length, sampleRate);
+          for (let ch = 0; ch < 2; ch++) {
+            const data = impulse.getChannelData(ch);
+            for (let i = 0; i < length; i++) {
+              const t = i / sampleRate;
+              const decay = Math.exp(-t * 3.8);
+              data[i] = ((Math.random() * 2 - 1) * 0.65 + Math.sin(i * 0.015) * 0.1) * decay;
             }
-            this.activeCueEnd = cue.end;
-            this.activeLoopCue = loop ? cue : null;
-            this.onCueEndedCallback = onEnd;
-
-            this.ytPlayer.unMute();
-            this.ytPlayer.setVolume(Math.round(this.volume * 100));
-            this.ytPlayer.seekTo(cue.start, true);
-            this.ytPlayer.playVideo();
-
-            this.ytMonitorTimer = setInterval(() => {
-              if (!this.ytReady || !this.ytPlayer || typeof this.ytPlayer.getCurrentTime !== 'function') return;
-              const cur = this.ytPlayer.getCurrentTime();
-              if (this.activeCueEnd !== null && cur >= this.activeCueEnd) {
-                if (this.activeLoopCue && this.isPlaying && !this.isMuted) {
-                  this.ytPlayer.seekTo(this.activeLoopCue.start, true);
-                  this.ytPlayer.playVideo();
-                } else {
-                  clearInterval(this.ytMonitorTimer);
-                  this.ytMonitorTimer = null;
-                  this.activeCueEnd = null;
-                  const cb = this.onCueEndedCallback;
-                  this.onCueEndedCallback = null;
-                  if (cb) {
-                    cb();
-                  } else if (this.isPlaying) {
-                    this.resumeSuspenseLoop();
-                  } else {
-                    this.ytPlayer.pauseVideo();
-                  }
-                }
-              }
-            }, 120);
-            return true;
-          } catch (e) {
-            if (onEnd) setTimeout(onEnd, 350);
-            return false;
           }
-        }
-
-        resumeSuspenseLoop() {
-          if (!this.isPlaying || this.isMuted) return;
-          const cueKey = this.bgmIntensity >= 3 ? 'suspense_3' : this.bgmIntensity === 2 ? 'suspense_2' : 'suspense_1';
-          if (this.ytReady && this.ytPlayer) {
-            this.stopSynthBgm();
-            this.playYouTubeCue(cueKey, { loop: true });
-          } else {
-            this.startSynthBgm();
-          }
+          const convolver = ctx.createConvolver();
+          convolver.buffer = impulse;
+          return convolver;
         }
 
         unlock() {
@@ -2591,29 +2439,57 @@
               const AudioCtx = window.AudioContext || window.webkitAudioContext;
               if (!AudioCtx) return;
               this.ctx = new AudioCtx();
+
+              this.compressor = this.ctx.createDynamicsCompressor();
+              this.compressor.threshold.value = -14;
+              this.compressor.knee.value = 18;
+              this.compressor.ratio.value = 3.5;
+              this.compressor.attack.value = 0.006;
+              this.compressor.release.value = 0.18;
+
               this.masterGain = this.ctx.createGain();
               this.bgmGain = this.ctx.createGain();
               this.sfxGain = this.ctx.createGain();
-              this.bgmGain.gain.value = 0.55;
-              this.sfxGain.gain.value = 0.80;
+
+              // Mixagem equilibrada: trilha envolvente sem competir com a locução
+              this.bgmGain.gain.value = 0.46;
+              this.sfxGain.gain.value = 0.85;
               this.masterGain.gain.value = this.isMuted ? 0 : this.volume;
-              this.bgmGain.connect(this.masterGain);
-              this.sfxGain.connect(this.masterGain);
+
+              // Ambiência de estúdio de TV (Reverb suave)
+              this.reverbNode = this._buildStudioReverb(this.ctx);
+              this.reverbSend = this.ctx.createGain();
+              this.reverbSend.gain.value = 0.24;
+
+              this.bgmGain.connect(this.compressor);
+              this.bgmGain.connect(this.reverbSend);
+              this.sfxGain.connect(this.compressor);
+              this.sfxGain.connect(this.reverbSend);
+
+              this.reverbSend.connect(this.reverbNode);
+              this.reverbNode.connect(this.compressor);
+
+              this.compressor.connect(this.masterGain);
               this.masterGain.connect(this.ctx.destination);
             }
-            if (this.ctx.state === 'suspended') {
-              this.ctx.resume();
+            if (this.ctx.state === 'suspended' || this.ctx.state === 'interrupted') {
+              this.ctx.resume().catch(() => {});
             }
           } catch (e) {}
+        }
+
+        // Abaixa suavemente a música enquanto o Professor Leo fala (Sidechain / Ducking de TV)
+        setSpeakingDuck(isSpeaking) {
+          this.isDucked = Boolean(isSpeaking);
+          if (!this.bgmGain || !this.ctx) return;
+          const targetGain = this.isDucked ? 0.20 : 0.46;
+          this.bgmGain.gain.setTargetAtTime(targetGain, this.ctx.currentTime, 0.14);
         }
 
         setVolume(val0to100) {
           this.volume = Math.max(0, Math.min(1, val0to100 / 100));
           if (this.masterGain && this.ctx) {
             this.masterGain.gain.setTargetAtTime(this.isMuted ? 0 : this.volume, this.ctx.currentTime, 0.04);
-          }
-          if (this.ytReady && this.ytPlayer) {
-            try { this.ytPlayer.setVolume(Math.round(this.volume * 100)); } catch (e) {}
           }
         }
 
@@ -2622,16 +2498,8 @@
           if (this.masterGain && this.ctx) {
             this.masterGain.gain.setTargetAtTime(this.isMuted ? 0 : this.volume, this.ctx.currentTime, 0.04);
           }
-          if (this.ytReady && this.ytPlayer) {
-            try {
-              if (this.isMuted) {
-                this.ytPlayer.mute();
-                this.ytPlayer.pauseVideo();
-              } else {
-                this.ytPlayer.unMute();
-                if (this.isPlaying) this.resumeSuspenseLoop();
-              }
-            } catch (e) {}
+          if (!this.isMuted && this.isPlaying) {
+            this.startBgm();
           }
           return this.isMuted;
         }
@@ -2640,327 +2508,314 @@
           this.bgmIntensity = Math.max(1, Math.min(4, level || 1));
         }
 
-        // Anuncia o valor exato da pergunta usando o áudio original do Silvio Santos no vídeo
-        playQuestionValueCue(questionNumber, onDone = null) {
-          const mapByQuestion = {
-            1: 'val_1000',
-            2: 'val_2000',
-            3: 'val_3000',
-            4: 'val_4000',
-            5: 'val_5000',
-            6: 'val_10000',
-            7: 'val_20000',
-            8: 'val_30000',
-            9: 'val_40000',
-            10: 'val_50000',
-            11: 'val_100000',
-            12: 'val_200000',
-            13: 'val_300000',
-            14: 'val_400000',
-            15: 'val_500000',
-            16: 'val_1000000'
-          };
-          const cueKey = mapByQuestion[questionNumber] || 'val_1000';
-          const started = this.playYouTubeCue(cueKey, {
-            loop: false,
-            onEnd: () => {
-              this.resumeSuspenseLoop();
-              if (onDone) onDone();
-            }
+        // Pad de cordas / sintetizador quente e cinematográfico (sem serra estridente)
+        _playWarmPadChord(freqs, time, duration, gainLevel = 0.085) {
+          if (!this.ctx || this.isMuted || !freqs || !freqs.length) return;
+          const filter = this.ctx.createBiquadFilter();
+          filter.type = 'lowpass';
+          filter.frequency.setValueAtTime(680 + this.bgmIntensity * 140, time);
+          filter.Q.value = 0.8;
+
+          const masterEnv = this.ctx.createGain();
+          masterEnv.gain.setValueAtTime(0.0001, time);
+          masterEnv.gain.linearRampToValueAtTime(gainLevel, time + Math.min(0.35, duration * 0.25));
+          masterEnv.gain.setValueAtTime(gainLevel * 0.9, time + Math.max(0.4, duration - 0.35));
+          masterEnv.gain.exponentialRampToValueAtTime(0.0001, time + duration);
+
+          filter.connect(masterEnv);
+          masterEnv.connect(this.bgmGain);
+
+          freqs.forEach((f, idx) => {
+            const osc = this.ctx.createOscillator();
+            osc.type = idx % 2 === 0 ? 'triangle' : 'sine';
+            osc.frequency.setValueAtTime(f, time);
+            osc.detune.setValueAtTime((idx - 1) * 5, time);
+            osc.connect(filter);
+            osc.start(time);
+            osc.stop(time + duration + 0.05);
           });
-          if (!started && onDone) {
-            setTimeout(onDone, 250);
-          }
         }
 
-        // Fanfarra / Trilha de abertura ao entrar no palco [00:00:00 -> 00:00:05] + Pergunta 1 mil [00:10:58]
-        playIntroFanfare(onIntroDone = null) {
+        // Piano elétrico / vibraphone suave para o tema melódico de suspense
+        _playGlassBell(freq, time, duration = 0.55, gainLevel = 0.11) {
+          if (!this.ctx || this.isMuted || !freq) return;
+          const oscFund = this.ctx.createOscillator();
+          const oscOver = this.ctx.createOscillator();
+          const overGain = this.ctx.createGain();
+          const env = this.ctx.createGain();
+          const filter = this.ctx.createBiquadFilter();
+
+          oscFund.type = 'sine';
+          oscFund.frequency.setValueAtTime(freq, time);
+
+          oscOver.type = 'triangle';
+          oscOver.frequency.setValueAtTime(freq * 2, time);
+          overGain.gain.setValueAtTime(0.22, time);
+          overGain.gain.exponentialRampToValueAtTime(0.001, time + duration * 0.45);
+
+          filter.type = 'lowpass';
+          filter.frequency.setValueAtTime(1850, time);
+          filter.frequency.exponentialRampToValueAtTime(750, time + duration);
+
+          env.gain.setValueAtTime(0.0001, time);
+          env.gain.linearRampToValueAtTime(gainLevel, time + 0.014);
+          env.gain.exponentialRampToValueAtTime(0.0001, time + duration);
+
+          oscFund.connect(filter);
+          oscOver.connect(overGain);
+          overGain.connect(filter);
+          filter.connect(env);
+          env.connect(this.bgmGain);
+
+          oscFund.start(time);
+          oscOver.start(time);
+          oscFund.stop(time + duration + 0.03);
+          oscOver.stop(time + duration + 0.03);
+        }
+
+        // Metais orquestrais polidos (usados apenas em fanfarras de entrada)
+        _playWarmBrass(freq, time, duration, gainLevel = 0.16) {
+          if (!this.ctx || this.isMuted || !freq) return;
+          const osc1 = this.ctx.createOscillator();
+          const osc2 = this.ctx.createOscillator();
+          const filter = this.ctx.createBiquadFilter();
+          const gain = this.ctx.createGain();
+
+          osc1.type = 'sawtooth';
+          osc2.type = 'triangle';
+          osc1.frequency.setValueAtTime(freq, time);
+          osc2.frequency.setValueAtTime(freq * 0.5, time);
+
+          filter.type = 'lowpass';
+          filter.frequency.setValueAtTime(340, time);
+          filter.frequency.exponentialRampToValueAtTime(1450, time + 0.07);
+          filter.frequency.exponentialRampToValueAtTime(820, time + duration);
+          filter.Q.value = 1.2;
+
+          gain.gain.setValueAtTime(0.0001, time);
+          gain.gain.linearRampToValueAtTime(gainLevel, time + 0.04);
+          gain.gain.setValueAtTime(gainLevel * 0.85, time + Math.max(0.06, duration - 0.08));
+          gain.gain.exponentialRampToValueAtTime(0.0001, time + duration);
+
+          osc1.connect(filter);
+          osc2.connect(filter);
+          filter.connect(gain);
+          gain.connect(this.bgmGain);
+
+          osc1.start(time);
+          osc2.start(time);
+          osc1.stop(time + duration + 0.04);
+          osc2.stop(time + duration + 0.04);
+        }
+
+        // Sub-baixo redondo e quente (sem serra áspera)
+        _playDeepBass(freq, time, duration = 0.36, gainLevel = 0.22) {
+          if (!this.ctx || this.isMuted || !freq) return;
+          const osc = this.ctx.createOscillator();
+          const sub = this.ctx.createOscillator();
+          const filter = this.ctx.createBiquadFilter();
+          const gain = this.ctx.createGain();
+
+          osc.type = 'triangle';
+          sub.type = 'sine';
+          osc.frequency.setValueAtTime(freq, time);
+          sub.frequency.setValueAtTime(freq * 0.5, time);
+
+          filter.type = 'lowpass';
+          filter.frequency.setValueAtTime(260 + this.bgmIntensity * 45, time);
+
+          gain.gain.setValueAtTime(0.0001, time);
+          gain.gain.linearRampToValueAtTime(gainLevel, time + 0.02);
+          gain.gain.exponentialRampToValueAtTime(0.0001, time + duration);
+
+          osc.connect(filter);
+          sub.connect(filter);
+          filter.connect(gain);
+          gain.connect(this.bgmGain);
+
+          osc.start(time);
+          sub.start(time);
+          osc.stop(time + duration + 0.03);
+          sub.stop(time + duration + 0.03);
+        }
+
+        // Batida cardíaca cinematográfica profunda e suave
+        _playHeartbeat(time, strength = 0.24) {
+          if (!this.ctx || this.isMuted) return;
+          [0, 0.16].forEach((offset, idx) => {
+            const t = time + offset;
+            const osc = this.ctx.createOscillator();
+            const gain = this.ctx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(idx === 0 ? 78 : 62, t);
+            osc.frequency.exponentialRampToValueAtTime(34, t + 0.14);
+            const peak = idx === 0 ? strength : strength * 0.72;
+            gain.gain.setValueAtTime(0.0001, t);
+            gain.gain.linearRampToValueAtTime(peak, t + 0.018);
+            gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.15);
+            osc.connect(gain);
+            gain.connect(this.bgmGain);
+            osc.start(t);
+            osc.stop(t + 0.16);
+          });
+        }
+
+        // Vinheta discreta e elegante de avanço de pergunta
+        playQuestionValueCue(questionNumber, onDone = null) {
           this.unlock();
-          if (this.ytReady && this.ytPlayer && !this.isMuted) {
-            this.playYouTubeCue('abertura_inicio', {
-              loop: false,
-              onEnd: () => {
-                this.playYouTubeCue('val_1000', {
-                  loop: false,
-                  onEnd: () => {
-                    this.resumeSuspenseLoop();
-                    if (onIntroDone) onIntroDone();
-                  }
-                });
-              }
-            });
+          if (!this.ctx || this.isMuted) {
+            if (onDone) setTimeout(onDone, 150);
             return;
           }
+          const now = this.ctx.currentTime + 0.02;
+          const baseFreq = 261.63 + Math.min(16, questionNumber) * 14;
+          this._playGlassBell(baseFreq, now, 0.35, 0.15);
+          this._playGlassBell(baseFreq * 1.25, now + 0.11, 0.45, 0.17);
+          this._playDeepBass(110, now, 0.28, 0.20);
+          if (onDone) setTimeout(onDone, 220);
+        }
 
+        // Fanfarra de abertura orquestral polida
+        playIntroFanfare(onIntroDone = null) {
+          this.unlock();
           if (!this.ctx || this.isMuted) {
             if (onIntroDone) onIntroDone();
             return;
           }
           const now = this.ctx.currentTime + 0.02;
           const notes = [
-            { f: 220.00, t: 0.00, d: 0.18 },
-            { f: 261.63, t: 0.18, d: 0.18 },
-            { f: 329.63, t: 0.36, d: 0.18 },
-            { f: 440.00, t: 0.54, d: 0.38 },
-            { f: 392.00, t: 0.96, d: 0.20 },
-            { f: 440.00, t: 1.18, d: 0.55 }
+            { f: 220.00, t: 0.00, d: 0.20 },
+            { f: 261.63, t: 0.18, d: 0.20 },
+            { f: 329.63, t: 0.36, d: 0.20 },
+            { f: 440.00, t: 0.54, d: 0.42 },
+            { f: 392.00, t: 0.98, d: 0.22 },
+            { f: 440.00, t: 1.20, d: 0.65 }
           ];
           notes.forEach(n => {
-            this._playBrassNote(n.f, now + n.t, n.d, 0.28);
-            this._playBrassNote(n.f * 0.5, now + n.t, n.d, 0.22);
+            this._playWarmBrass(n.f, now + n.t, n.d, 0.19);
+            this._playGlassBell(n.f * 2, now + n.t, n.d + 0.15, 0.10);
           });
-          if (onIntroDone) setTimeout(onIntroDone, 900);
+          this._playWarmPadChord([220.00, 261.63, 329.63, 440.00], now + 0.54, 1.35, 0.11);
+          this._playDeepBass(110, now + 0.00, 0.45, 0.28);
+          this._playDeepBass(110, now + 0.54, 0.50, 0.30);
+          this._playDeepBass(110, now + 1.20, 0.65, 0.32);
+          if (onIntroDone) setTimeout(onIntroDone, 1600);
         }
 
+        // Sequenciador de alta precisão (Lookahead Web Audio) — sem engasgos e com harmonia cinematográfica
         startBgm() {
           this.unlock();
           this.isPlaying = true;
-          if (this.ytReady && this.ytPlayer && !this.isMuted) {
-            this.stopSynthBgm();
-            if (this.activeCueEnd === null) {
-              this.resumeSuspenseLoop();
-            }
-          } else {
-            this.startSynthBgm();
-          }
-        }
+          if (!this.ctx || this.bgmSchedulerTimer) return;
 
-        startSynthBgm() {
-          if (!this.ctx || this.bgmInterval) return;
-          const bassOstinato = [
-            110.00, 110.00, 130.81, 110.00,
-            146.83, 146.83, 130.81, 123.47,
-            87.31,  87.31,  110.00, 130.81,
-            82.41,  98.00,  103.83, 123.47
+          // Progressão harmônica em Ré menor cinematográfico (Dm9 -> Bbmaj7 -> Gm7 -> A7sus4/A7)
+          const chordsByBar = [
+            [146.83, 174.61, 220.00, 261.63, 329.63], // Dm9
+            [116.54, 174.61, 220.00, 261.63, 293.66], // Bbmaj7
+            [98.00,  146.83, 174.61, 220.00, 261.63], // Gm7
+            [110.00, 164.81, 220.00, 246.94, 277.18]  // A7sus4 -> A7
           ];
-          const brassTheme = [
-            440.00, 0,      329.63, 440.00,
-            523.25, 0,      493.88, 440.00,
-            349.23, 0,      440.00, 523.25,
-            493.88, 415.30, 329.63, 0
+
+          const bassPattern = [
+            146.83, 0, 146.83, 174.61, 220.00, 0, 174.61, 146.83,
+            116.54, 0, 116.54, 146.83, 174.61, 0, 146.83, 130.81,
+            98.00,  0, 98.00,  116.54, 146.83, 0, 174.61, 146.83,
+            110.00, 0, 110.00, 130.81, 164.81, 0, 138.59, 130.81
           ];
+
+          // Motivo melódico sutil de suspense (inspirado em trilhas de quiz show modernas)
+          const motifPattern = [
+            440.00, 0,      523.25, 0,      587.33, 0,      523.25, 440.00,
+            349.23, 0,      440.00, 0,      523.25, 0,      440.00, 0,
+            392.00, 0,      440.00, 0,      466.16, 0,      440.00, 392.00,
+            329.63, 0,      392.00, 0,      440.00, 0,      0,      0
+          ];
+
           this.bgmStep = 0;
-          const tickBgm = () => {
-            if (!this.ctx || !this.isPlaying || (this.ytReady && !this.isMuted)) return;
-            if (this.ctx.state === 'suspended') this.ctx.resume().catch(() => {});
-            if (this.isMuted || this.ctx.state !== 'running') return;
-            const now = this.ctx.currentTime;
-            const step = this.bgmStep % bassOstinato.length;
-            this.bgmStep++;
-            if (step % 4 === 0) {
-              this._playHeartbeat(now, 0.34 + this.bgmIntensity * 0.06);
-              this._playTimpaniHit(bassOstinato[step], now, 0.36);
+          this.nextNoteTime = this.ctx.currentTime + 0.05;
+
+          const scheduleStep = (stepIndex, time) => {
+            const idx = stepIndex % 32;
+            const bar = Math.floor(idx / 8);
+            const stepInBar = idx % 8;
+
+            // Pad harmônico sustentado no início de cada compasso
+            if (stepInBar === 0) {
+              this._playWarmPadChord(chordsByBar[bar], time, 2.25, 0.075 + this.bgmIntensity * 0.01);
+              this._playHeartbeat(time, 0.18 + this.bgmIntensity * 0.03);
+            } else if (stepInBar === 4 && this.bgmIntensity >= 2) {
+              this._playHeartbeat(time, 0.15 + this.bgmIntensity * 0.025);
             }
-            const bassOsc = this.ctx.createOscillator();
-            const bassGain = this.ctx.createGain();
-            bassOsc.type = 'sawtooth';
-            bassOsc.frequency.setValueAtTime(bassOstinato[step], now);
-            bassGain.gain.setValueAtTime(0.001, now);
-            bassGain.gain.linearRampToValueAtTime(0.18, now + 0.02);
-            bassGain.gain.exponentialRampToValueAtTime(0.001, now + 0.30);
-            bassOsc.connect(bassGain);
-            bassGain.connect(this.bgmGain);
-            bassOsc.start(now);
-            bassOsc.stop(now + 0.32);
 
-            const leadFreq = brassTheme[step];
-            if (leadFreq > 0) this._playBrassNote(leadFreq, now, 0.28, 0.14);
+            // Linha de baixo redonda
+            const bassFreq = bassPattern[idx];
+            if (bassFreq > 0) {
+              this._playDeepBass(bassFreq, time, 0.34, 0.19 + this.bgmIntensity * 0.015);
+            }
+
+            // Notas cristalinas do tema melódico
+            const motifFreq = motifPattern[idx];
+            if (motifFreq > 0) {
+              this._playGlassBell(motifFreq, time, 0.62, 0.09 + this.bgmIntensity * 0.012);
+            }
           };
-          tickBgm();
-          this.bgmInterval = setInterval(tickBgm, 340);
-        }
 
-        stopSynthBgm() {
-          if (this.bgmInterval) {
-            clearInterval(this.bgmInterval);
-            this.bgmInterval = null;
-          }
+          const lookahead = () => {
+            if (!this.ctx || !this.isPlaying) return;
+            if (this.ctx.state === 'suspended' || this.ctx.state === 'interrupted') {
+              this.ctx.resume().catch(() => {});
+            }
+            if (this.ctx.state !== 'running') return;
+
+            const stepDuration = Math.max(0.25, 0.288 - (this.bgmIntensity - 1) * 0.011);
+
+            if (this.nextNoteTime < this.ctx.currentTime) {
+              this.nextNoteTime = this.ctx.currentTime + 0.03;
+            }
+
+            while (this.nextNoteTime < this.ctx.currentTime + 0.18) {
+              if (!this.isMuted) {
+                scheduleStep(this.bgmStep, this.nextNoteTime);
+              }
+              this.nextNoteTime += stepDuration;
+              this.bgmStep++;
+            }
+          };
+
+          lookahead();
+          this.bgmSchedulerTimer = setInterval(lookahead, 60);
         }
 
         stopBgm() {
           this.isPlaying = false;
-          this.activeLoopCue = null;
-          this.activeCueEnd = null;
-          this.stopSynthBgm();
-          if (this.ytMonitorTimer) {
-            clearInterval(this.ytMonitorTimer);
-            this.ytMonitorTimer = null;
-          }
-          if (this.ytReady && this.ytPlayer) {
-            try { this.ytPlayer.pauseVideo(); } catch (e) {}
+          if (this.bgmSchedulerTimer) {
+            clearInterval(this.bgmSchedulerTimer);
+            this.bgmSchedulerTimer = null;
           }
         }
 
-        // Momento: Jogador clica na alternativa ("Você tem certeza?") [00:13:44]
         playConfirmPromptSting() {
           this.unlock();
-          if (this.playYouTubeCue('tem_certeza', { loop: false })) return;
           if (!this.ctx || this.isMuted) return;
           const now = this.ctx.currentTime;
-          this._playHeartbeat(now, 0.42);
-        }
-
-        // Momento: Confirmação final ("Está certo disso? Posso perguntar?") [00:14:28]
-        startSuspense(durationSec = 2.6) {
-          this.unlock();
-          this.stopSuspense();
-          if (this.playYouTubeCue('esta_certo_disso', { loop: false })) return;
-          if (!this.ctx || this.isMuted) return;
-          const now = this.ctx.currentTime;
-          const subOsc = this.ctx.createOscillator();
-          const gain = this.ctx.createGain();
-          subOsc.type = 'sine';
-          subOsc.frequency.setValueAtTime(55, now);
-          subOsc.frequency.exponentialRampToValueAtTime(146.83, now + durationSec);
-          gain.gain.setValueAtTime(0.04, now);
-          gain.gain.linearRampToValueAtTime(0.28, now + durationSec);
-          subOsc.connect(gain);
-          gain.connect(this.sfxGain);
-          subOsc.start(now);
-          this.suspenseSubOsc = subOsc;
-        }
-
-        stopSuspense() {
-          if (this.suspenseOsc) { try { this.suspenseOsc.stop(); } catch (e) {} this.suspenseOsc = null; }
-          if (this.suspenseSubOsc) { try { this.suspenseSubOsc.stop(); } catch (e) {} this.suspenseSubOsc = null; }
-        }
-
-        // Momento: Resposta Certa ("Certa resposta!" [00:14:41] + Moedas caindo [00:15:17] ou "Ganhou 1 milhão" [00:15:11])
-        playCorrect(isMillion = false) {
-          this.unlock();
-          this.stopSuspense();
-          if (isMillion) {
-            if (this.playYouTubeCue('ganhou_milhao', {
-              loop: false,
-              onEnd: () => this.playYouTubeCue('trilha_abertura', { loop: false })
-            })) return;
-          } else {
-            if (this.playYouTubeCue('certa_resposta', {
-              loop: false,
-              onEnd: () => this.playYouTubeCue('moedas_caindo', { loop: false })
-            })) return;
-          }
-
-          if (!this.ctx || this.isMuted) return;
-          const now = this.ctx.currentTime;
-          const notes = isMillion
-            ? [523.25, 659.25, 783.99, 1046.5, 783.99, 1046.5]
-            : [523.25, 659.25, 783.99, 1046.5];
-          notes.forEach((freq, idx) => {
-            const t = now + idx * 0.11;
+          this._playHeartbeat(now, 0.35);
+          [146.83, 174.61, 220.00, 277.18].forEach((freq) => {
             const osc = this.ctx.createOscillator();
+            const filter = this.ctx.createBiquadFilter();
             const gain = this.ctx.createGain();
             osc.type = 'triangle';
-            osc.frequency.setValueAtTime(freq, t);
-            gain.gain.setValueAtTime(0.001, t);
-            gain.gain.linearRampToValueAtTime(0.35, t + 0.03);
-            gain.gain.exponentialRampToValueAtTime(0.001, t + 0.42);
-            osc.connect(gain);
+            osc.frequency.setValueAtTime(freq, now);
+            filter.type = 'lowpass';
+            filter.frequency.setValueAtTime(950, now);
+            filter.frequency.exponentialRampToValueAtTime(320, now + 0.65);
+            gain.gain.setValueAtTime(0.001, now);
+            gain.gain.linearRampToValueAtTime(0.11, now + 0.03);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.7);
+            osc.connect(filter);
+            filter.connect(gain);
             gain.connect(this.sfxGain);
-            osc.start(t);
-            osc.stop(t + 0.45);
-          });
-        }
-
-        // Momento: Resposta Errada ("Que pena... você errou!") [00:14:45]
-        playWrong() {
-          this.unlock();
-          this.stopSuspense();
-          if (this.playYouTubeCue('que_pena_errou', { loop: false })) return;
-          if (!this.ctx || this.isMuted) return;
-          const now = this.ctx.currentTime;
-          [293.66, 261.63, 220.0, 174.61].forEach((freq, idx) => {
-            const t = now + idx * 0.16;
-            const osc = this.ctx.createOscillator();
-            const gain = this.ctx.createGain();
-            osc.type = 'sawtooth';
-            osc.frequency.setValueAtTime(freq, t);
-            gain.gain.setValueAtTime(0.24, t);
-            gain.gain.exponentialRampToValueAtTime(0.001, t + 0.35);
-            osc.connect(gain);
-            gain.connect(this.sfxGain);
-            osc.start(t);
-            osc.stop(t + 0.38);
-          });
-        }
-
-        // Momento: Tempo esgotado ("Seu tempo acabou") [00:14:50]
-        playTimeUp() {
-          this.unlock();
-          this.stopSuspense();
-          if (this.playYouTubeCue('tempo_acabou', { loop: false })) return;
-          this.playWrong();
-        }
-
-        // Momento: Pedir ajudas específicas (Cartas [00:14:19], Placas [00:14:02], Convidados [00:13:52])
-        playHelpCue(type) {
-          this.unlock();
-          const map = {
-            cards: 'ajuda_cartas',
-            audience: 'ajuda_placas',
-            students: 'ajuda_convidados'
-          };
-          if (map[type] && this.playYouTubeCue(map[type], { loop: false })) return;
-          this.playClick();
-        }
-
-        // Momento: Encerramento / Parar ("Posso entregar o ouro?" [00:14:57] / "Tchau pessoal!" [00:16:44])
-        playStopOrEndCue(hasPrize) {
-          this.unlock();
-          this.playYouTubeCue(hasPrize ? 'entregar_ouro' : 'tchau_pessoal', { loop: false });
-        }
-
-        _playBrassNote(freq, time, duration, gainLevel = 0.24) {
-          if (!this.ctx || this.isMuted || !freq) return;
-          const osc1 = this.ctx.createOscillator();
-          const filter = this.ctx.createBiquadFilter();
-          const gain = this.ctx.createGain();
-          osc1.type = 'sawtooth';
-          osc1.frequency.setValueAtTime(freq, time);
-          filter.type = 'lowpass';
-          filter.frequency.setValueAtTime(1600, time);
-          gain.gain.setValueAtTime(0.001, time);
-          gain.gain.linearRampToValueAtTime(gainLevel, time + 0.025);
-          gain.gain.exponentialRampToValueAtTime(0.001, time + duration);
-          osc1.connect(filter);
-          filter.connect(gain);
-          gain.connect(this.bgmGain);
-          osc1.start(time);
-          osc1.stop(time + duration + 0.02);
-        }
-
-        _playTimpaniHit(freq, time, strength = 0.42) {
-          if (!this.ctx || this.isMuted) return;
-          const osc = this.ctx.createOscillator();
-          const gain = this.ctx.createGain();
-          osc.type = 'triangle';
-          osc.frequency.setValueAtTime(freq * 1.45, time);
-          osc.frequency.exponentialRampToValueAtTime(freq * 0.72, time + 0.34);
-          gain.gain.setValueAtTime(0.001, time);
-          gain.gain.linearRampToValueAtTime(strength, time + 0.015);
-          gain.gain.exponentialRampToValueAtTime(0.001, time + 0.36);
-          osc.connect(gain);
-          gain.connect(this.bgmGain);
-          osc.start(time);
-          osc.stop(time + 0.38);
-        }
-
-        _playHeartbeat(time, strength = 0.45) {
-          if (!this.ctx || this.isMuted) return;
-          [0, 0.15].forEach((offset, idx) => {
-            const t = time + offset;
-            const osc = this.ctx.createOscillator();
-            const gain = this.ctx.createGain();
-            osc.type = 'sine';
-            osc.frequency.setValueAtTime(idx === 0 ? 92 : 74, t);
-            osc.frequency.exponentialRampToValueAtTime(38, t + 0.13);
-            gain.gain.setValueAtTime(0.001, t);
-            gain.gain.linearRampToValueAtTime(idx === 0 ? strength : strength * 0.78, t + 0.015);
-            gain.gain.exponentialRampToValueAtTime(0.001, t + 0.14);
-            osc.connect(gain);
-            gain.connect(this.bgmGain);
-            osc.start(t);
-            osc.stop(t + 0.15);
+            osc.start(now);
+            osc.stop(now + 0.72);
           });
         }
 
@@ -2971,14 +2826,14 @@
           const osc = this.ctx.createOscillator();
           const gain = this.ctx.createGain();
           osc.type = 'sine';
-          osc.frequency.setValueAtTime(520, now);
-          osc.frequency.exponentialRampToValueAtTime(780, now + 0.07);
-          gain.gain.setValueAtTime(0.22, now);
-          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
+          osc.frequency.setValueAtTime(540, now);
+          osc.frequency.exponentialRampToValueAtTime(810, now + 0.065);
+          gain.gain.setValueAtTime(0.18, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.075);
           osc.connect(gain);
           gain.connect(this.sfxGain);
           osc.start(now);
-          osc.stop(now + 0.09);
+          osc.stop(now + 0.085);
         }
 
         playMagicChime() {
@@ -2992,12 +2847,12 @@
             osc.type = 'sine';
             osc.frequency.setValueAtTime(freq, t);
             gain.gain.setValueAtTime(0.001, t);
-            gain.gain.linearRampToValueAtTime(0.25, t + 0.02);
-            gain.gain.exponentialRampToValueAtTime(0.001, t + 0.35);
+            gain.gain.linearRampToValueAtTime(0.22, t + 0.02);
+            gain.gain.exponentialRampToValueAtTime(0.001, t + 0.36);
             osc.connect(gain);
             gain.connect(this.sfxGain);
             osc.start(t);
-            osc.stop(t + 0.36);
+            osc.stop(t + 0.38);
           });
         }
 
@@ -3007,14 +2862,117 @@
           const now = this.ctx.currentTime;
           const osc = this.ctx.createOscillator();
           const gain = this.ctx.createGain();
-          osc.type = urgent ? 'square' : 'sine';
-          osc.frequency.setValueAtTime(urgent ? 980 : 720, now);
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(urgent ? 1046.5 : 784, now);
           gain.gain.setValueAtTime(urgent ? 0.14 : 0.06, now);
-          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.05);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.055);
           osc.connect(gain);
           gain.connect(this.sfxGain);
           osc.start(now);
-          osc.stop(now + 0.06);
+          osc.stop(now + 0.065);
+        }
+
+        startSuspense(durationSec = 2.6) {
+          this.unlock();
+          this.stopSuspense();
+          if (!this.ctx || this.isMuted) return;
+          const now = this.ctx.currentTime;
+          const filter = this.ctx.createBiquadFilter();
+          filter.type = 'lowpass';
+          filter.frequency.setValueAtTime(220, now);
+          filter.frequency.exponentialRampToValueAtTime(1100, now + durationSec);
+
+          const gain = this.ctx.createGain();
+          gain.gain.setValueAtTime(0.02, now);
+          gain.gain.linearRampToValueAtTime(0.22, now + durationSec);
+
+          filter.connect(gain);
+          gain.connect(this.sfxGain);
+
+          [73.42, 146.83, 220.00].forEach((freq, idx) => {
+            const osc = this.ctx.createOscillator();
+            osc.type = idx === 0 ? 'sine' : 'triangle';
+            osc.frequency.setValueAtTime(freq, now);
+            osc.frequency.exponentialRampToValueAtTime(freq * 1.5, now + durationSec);
+            osc.connect(filter);
+            osc.start(now);
+            this.suspenseNodes.push(osc);
+          });
+        }
+
+        stopSuspense() {
+          this.suspenseNodes.forEach(osc => {
+            try { osc.stop(); } catch (e) {}
+          });
+          this.suspenseNodes = [];
+        }
+
+        playCorrect(isMillion = false) {
+          this.unlock();
+          this.stopSuspense();
+          if (!this.ctx || this.isMuted) return;
+          const now = this.ctx.currentTime;
+          const notes = isMillion
+            ? [523.25, 659.25, 783.99, 1046.5, 783.99, 1046.5]
+            : [523.25, 659.25, 783.99, 1046.5];
+          notes.forEach((freq, idx) => {
+            const t = now + idx * 0.11;
+            const osc = this.ctx.createOscillator();
+            const gain = this.ctx.createGain();
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(freq, t);
+            gain.gain.setValueAtTime(0.001, t);
+            gain.gain.linearRampToValueAtTime(0.32, t + 0.03);
+            gain.gain.exponentialRampToValueAtTime(0.001, t + 0.45);
+            osc.connect(gain);
+            gain.connect(this.sfxGain);
+            osc.start(t);
+            osc.stop(t + 0.48);
+          });
+          if (isMillion) this.playApplause(3.2);
+        }
+
+        playWrong() {
+          this.unlock();
+          this.stopSuspense();
+          if (!this.ctx || this.isMuted) return;
+          const now = this.ctx.currentTime;
+          const notes = [293.66, 261.63, 220.0, 174.61];
+          notes.forEach((freq, idx) => {
+            const t = now + idx * 0.16;
+            const osc = this.ctx.createOscillator();
+            const filter = this.ctx.createBiquadFilter();
+            const gain = this.ctx.createGain();
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(freq, t);
+            filter.type = 'lowpass';
+            filter.frequency.setValueAtTime(750, t);
+            gain.gain.setValueAtTime(0.24, t);
+            gain.gain.exponentialRampToValueAtTime(0.001, t + 0.36);
+            osc.connect(filter);
+            filter.connect(gain);
+            gain.connect(this.sfxGain);
+            osc.start(t);
+            osc.stop(t + 0.38);
+          });
+        }
+
+        playTimeUp() {
+          this.unlock();
+          this.stopSuspense();
+          this.playWrong();
+        }
+
+        playHelpCue(type) {
+          this.unlock();
+          if (type === 'cards') this.playCardFlip();
+          else this.playMagicChime();
+        }
+
+        playStopOrEndCue(hasPrize) {
+          this.unlock();
+          if (hasPrize) this.playCorrect(false);
+          else this.playClick();
         }
 
         playCardFlip() {
@@ -3026,7 +2984,7 @@
           osc.type = 'sine';
           osc.frequency.setValueAtTime(320, now);
           osc.frequency.exponentialRampToValueAtTime(920, now + 0.16);
-          gain.gain.setValueAtTime(0.28, now);
+          gain.gain.setValueAtTime(0.25, now);
           gain.gain.exponentialRampToValueAtTime(0.001, now + 0.18);
           osc.connect(gain);
           gain.connect(this.sfxGain);
@@ -3052,7 +3010,7 @@
           bandpass.frequency.value = 1100;
           bandpass.Q.value = 0.7;
           const gain = this.ctx.createGain();
-          gain.gain.setValueAtTime(0.30, now);
+          gain.gain.setValueAtTime(0.28, now);
           gain.gain.exponentialRampToValueAtTime(0.01, now + durationSec);
           noise.connect(bandpass);
           bandpass.connect(gain);
@@ -3062,7 +3020,7 @@
       }
 
       /* =========================================================================
-         4. MOTOR DE VOZ (WEB SPEECH API EM PT-BR)
+         4. MOTOR DE VOZ (WEB SPEECH API EM PT-BR — MESMA CADÊNCIA NO PC E CELULAR)
          ========================================================================= */
       class HostVoiceEngine {
         constructor() {
@@ -3071,6 +3029,7 @@
           this.lastSpokenText = '';
           this.speakQueueTimer = null;
           this.lipSyncTimer = null;
+          this.mobileWatchdogTimer = null;
           this.onMouthMove = null;
           this.supported = 'speechSynthesis' in window;
           if (this.supported) {
@@ -3087,7 +3046,7 @@
           );
           if (ptVoices.length > 0) {
             const maleBr = ptVoices.find(v =>
-              /daniel|antonio|antônio|fabio|fábio|humberto|julio|júlio|ricardo|felipe|tiago|rodrigo|male|homem/i.test(v.name) &&
+              /daniel|antonio|antônio|fabio|fábio|humberto|julio|júlio|ricardo|felipe|tiago|rodrigo|male|homem|pt-br-x-afs|pt-br-x-pte|pt-br-x-ptd/i.test(v.name) &&
               v.lang.toLowerCase().includes('pt-br')
             );
             const naturalBr = ptVoices.find(v =>
@@ -3102,7 +3061,11 @@
           if (!this.supported) return;
           try {
             this.loadVoices();
-            const emptyUtter = new SpeechSynthesisUtterance('');
+            if (window.speechSynthesis.paused) {
+              window.speechSynthesis.resume();
+            }
+            const emptyUtter = new SpeechSynthesisUtterance(' ');
+            emptyUtter.lang = 'pt-BR';
             emptyUtter.volume = 0;
             window.speechSynthesis.speak(emptyUtter);
           } catch (e) {}
@@ -3110,6 +3073,7 @@
 
         stop() {
           if (this.speakQueueTimer) { clearTimeout(this.speakQueueTimer); this.speakQueueTimer = null; }
+          if (this.mobileWatchdogTimer) { clearTimeout(this.mobileWatchdogTimer); this.mobileWatchdogTimer = null; }
           this._stopLipSync();
           if (!this.supported) return;
           try { window.speechSynthesis.cancel(); } catch (e) {}
@@ -3153,9 +3117,14 @@
           }
           try {
             this.stop();
+            this.loadVoices();
+            if (window.speechSynthesis.paused) {
+              window.speechSynthesis.resume();
+            }
             const chunks = this._splitIntoExpressiveChunks(text);
             if (chunks.length === 0) return;
 
+            const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
             let idx = 0;
             const speakNextChunk = () => {
               if (!this.enabled || idx >= chunks.length) {
@@ -3169,14 +3138,18 @@
               const utter = new SpeechSynthesisUtterance(sentence);
               utter.lang = 'pt-BR';
               if (this.selectedVoice) utter.voice = this.selectedVoice;
-              utter.rate = 1.38;
+              utter.rate = isMobile ? 1.12 : 1.38;
               utter.pitch = 0.92;
+              utter.volume = 1.0;
 
-              utter.onstart = () => {
-                this._startLipSync(sentence);
-                if (onStateChange) onStateChange(true);
-              };
-              utter.onend = () => {
+              let finishedChunk = false;
+              const advanceChunk = () => {
+                if (finishedChunk) return;
+                finishedChunk = true;
+                if (this.mobileWatchdogTimer) {
+                  clearTimeout(this.mobileWatchdogTimer);
+                  this.mobileWatchdogTimer = null;
+                }
                 this._stopLipSync();
                 idx++;
                 if (idx < chunks.length && this.enabled) {
@@ -3185,10 +3158,21 @@
                   if (onStateChange) onStateChange(false);
                 }
               };
-              utter.onerror = () => {
-                this._stopLipSync();
-                if (onStateChange) onStateChange(false);
+
+              utter.onstart = () => {
+                this._startLipSync(sentence);
+                if (onStateChange) onStateChange(true);
               };
+              utter.onend = advanceChunk;
+              utter.onerror = advanceChunk;
+
+              // Watchdog de segurança para Android/iOS quando onend não dispara
+              const estimatedMs = Math.max(1800, sentence.length * 85 + 900);
+              this.mobileWatchdogTimer = setTimeout(() => {
+                if (!finishedChunk && !window.speechSynthesis.speaking) {
+                  advanceChunk();
+                }
+              }, estimatedMs);
 
               window.speechSynthesis.speak(utter);
             };
@@ -3496,6 +3480,7 @@
       function hostSay(text, moodAfter = null, onComplete = null) {
         el.hostSpeechText.textContent = text;
         voice.speak(text, (isSpeaking) => {
+          audio.setSpeakingDuck(isSpeaking);
           if (isSpeaking) {
             setLeoMood('speaking');
           } else {
@@ -3762,14 +3747,7 @@
         });
 
         state.isLocked = false;
-        document.addEventListener('pointerdown', () => {
-        audio.unlock();
-        if (el.gameScreen.classList.contains('active') && !audio.bgmInterval && !audio.isMuted) {
-          audio.startBgm();
-        }
-      }, { passive: true });
-
-      updateCoinsUI();
+updateCoinsUI();
         updateLifelinesUI();
 
         stopQuestionTimer();
@@ -3862,7 +3840,16 @@
 
             // Recompensa de moedas por acerto (+10 moedas)
             state.coins += 10;
-            updateCoinsUI();
+            function enableGeneralGameMusic() {
+        audio.unlock();
+        if (!audio.isMuted && !audio.bgmInterval) {
+          audio.startBgm();
+        }
+      }
+      document.addEventListener('pointerdown', enableGeneralGameMusic, { passive: true });
+      document.addEventListener('keydown', enableGeneralGameMusic, { passive: true });
+
+      updateCoinsUI();
 
             const isMillion = step.q === 16;
             audio.playCorrect(isMillion);
@@ -4235,7 +4222,8 @@
       function finishGame(reason) {
         stopQuestionTimer();
         state.isLocked = true;
-        audio.stopBgm();
+        audio.setIntensity(1);
+        if (!audio.isMuted) audio.startBgm();
         const prize = state.accumulatedPrize;
         const correctCount = reason === 'million' ? 16 : state.qIndex;
 
@@ -4434,7 +4422,9 @@
         audio.unlock();
         voice.unlock();
         audio.isPlaying = true;
-        audio.playIntroFanfare();
+        audio.playIntroFanfare(() => {
+          if (audio.isPlaying) audio.startBgm();
+        });
 
         stopConfetti();
         el.tvStage.classList.remove('million-party');
@@ -4493,7 +4483,8 @@
       el.backToLobbyBtn.addEventListener('click', () => {
         stopQuestionTimer();
         voice.stop();
-        audio.stopBgm();
+        audio.setIntensity(1);
+        if (!audio.isMuted) audio.startBgm();
         stopConfetti();
         el.tvStage.classList.remove('million-party');
         switchScreen(el.startScreen);
