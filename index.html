@@ -1,0 +1,4119 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="theme-color" content="#0d2b8a" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <title>Show do Milhão: Edição Geografia</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Montserrat:wght@700;800;900&family=Inter:wght@500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg-blue-top: #1842b8;
+      --bg-blue-mid: #102e8c;
+      --bg-blue-deep: #091b5c;
+      --red-card-top: #dc1414;
+      --red-card-bot: #8a0404;
+      --gold-coin-top: #ffe866;
+      --gold-coin-mid: #e0b224;
+      --gold-coin-bot: #9e7308;
+      --green-btn-top: #26c93a;
+      --green-btn-bot: #0c781a;
+      --safe-top: env(safe-area-inset-top, 0px);
+      --safe-bottom: env(safe-area-inset-bottom, 0px);
+      --safe-left: env(safe-area-inset-left, 0px);
+      --safe-right: env(safe-area-inset-right, 0px);
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      min-height: 100%;
+      background-color: var(--bg-blue-deep);
+      color: #ffffff;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      overflow-x: hidden;
+    }
+
+    /* =========================================================================
+       CENÁRIO DE PALCO TV CLÁSSICO (AZUL ROYAL COM HOLOFOTES)
+       ========================================================================= */
+    .tv-stage {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      background:
+        radial-gradient(circle at 75% 22%, rgba(96, 165, 250, 0.45) 0%, transparent 32%),
+        radial-gradient(circle at 28% 12%, rgba(59, 130, 246, 0.35) 0%, transparent 40%),
+        linear-gradient(180deg, #163eb5 0%, #0e2982 55%, #081854 100%);
+      overflow: hidden;
+    }
+
+    .spotlight {
+      position: absolute;
+      top: -15%;
+      width: 44vw;
+      height: 130vh;
+      background: conic-gradient(from 165deg at 50% 0%, transparent 0deg, rgba(147, 197, 253, 0.16) 15deg, transparent 30deg);
+      transform-origin: 50% 0%;
+      filter: blur(8px);
+    }
+
+    .spotlight-left { left: 6%; animation: sweepLeft 7s ease-in-out infinite alternate; }
+    .spotlight-right { right: 6%; animation: sweepRight 8s ease-in-out infinite alternate; }
+
+    .tv-stage.million-party .spotlight {
+      animation-duration: 0.85s;
+      background: conic-gradient(from 160deg at 50% 0%, transparent 0deg, rgba(255, 230, 128, 0.35) 20deg, transparent 40deg);
+    }
+
+    @keyframes sweepLeft { 0% { transform: rotate(-12deg); } 100% { transform: rotate(15deg); } }
+    @keyframes sweepRight { 0% { transform: rotate(14deg); } 100% { transform: rotate(-14deg); } }
+
+    .app-wrapper {
+      position: relative;
+      z-index: 1;
+      width: 100vw;
+      height: 100dvh;
+      max-width: 100%;
+      margin: 0;
+      padding: calc(10px + var(--safe-top)) calc(16px + var(--safe-right)) calc(10px + var(--safe-bottom)) calc(16px + var(--safe-left));
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .screen {
+      display: none;
+      flex: 1;
+      height: 100%;
+      min-height: 0;
+      flex-direction: column;
+    }
+    .screen.active { display: flex; }
+    #startScreen.active, #endScreen.active {
+      overflow-y: auto;
+    }
+
+    /* =========================================================================
+       TELA INICIAL (LOBBY)
+       ========================================================================= */
+    .start-container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      padding: 8px 0;
+    }
+
+    .logo-badge {
+      text-align: center;
+      padding: 18px 28px;
+      border-radius: 26px;
+      background: linear-gradient(180deg, #d91414 0%, #8a0404 100%);
+      border: 4px solid #ffffff;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.55), inset 0 0 18px rgba(255, 255, 255, 0.25);
+      max-width: 580px;
+      width: 100%;
+    }
+
+    .logo-subtitle-top {
+      display: inline-block;
+      font-size: 0.78rem;
+      font-weight: 800;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: #fff3b0;
+      background: rgba(0, 0, 0, 0.28);
+      padding: 4px 14px;
+      border-radius: 999px;
+      border: 1.5px solid #ffe066;
+      margin-bottom: 6px;
+    }
+
+    .game-title {
+      font-family: 'Fredoka', 'Montserrat', sans-serif;
+      font-weight: 700;
+      font-size: clamp(2.1rem, 6vw, 3.3rem);
+      line-height: 1.05;
+      margin: 4px 0;
+      text-transform: uppercase;
+      color: #ffffff;
+      text-shadow: 0 4px 0 #590202, 0 6px 14px rgba(0, 0, 0, 0.6);
+    }
+
+    .game-tagline {
+      font-size: 0.94rem;
+      color: #ffe4e6;
+      margin: 4px 0 0;
+      font-weight: 600;
+    }
+
+    .start-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 16px;
+      width: 100%;
+      max-width: 920px;
+    }
+
+    @media (min-width: 820px) {
+      .start-grid { grid-template-columns: 1.15fr 0.85fr; }
+    }
+
+    .classic-panel {
+      background: rgba(11, 31, 102, 0.88);
+      border: 2.5px solid rgba(255, 255, 255, 0.85);
+      border-radius: 22px;
+      box-shadow: 0 10px 28px rgba(0, 0, 0, 0.48);
+    }
+
+    .start-card {
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 14px;
+    }
+
+    .host-welcome {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      background: rgba(6, 17, 64, 0.78);
+      padding: 12px;
+      border-radius: 16px;
+      border: 2px solid #f5b82e;
+    }
+
+    .host-welcome-text p { margin: 0; font-size: 0.9rem; line-height: 1.4; color: #f1f5f9; }
+    .host-welcome-text strong { color: #ffe066; display: block; margin-bottom: 3px; font-size: 0.98rem; }
+
+    .input-group { display: flex; flex-direction: column; gap: 6px; }
+    .input-group label { font-size: 0.88rem; font-weight: 700; color: #ffe066; }
+
+    .player-input {
+      width: 100%;
+      min-height: 50px;
+      padding: 12px 14px;
+      border-radius: 14px;
+      border: 2.5px solid #ffffff;
+      background: #071447;
+      color: #ffffff;
+      font-size: 16px;
+      font-weight: 700;
+      outline: none;
+      user-select: text;
+    }
+
+    .player-input:focus {
+      border-color: #ffe066;
+      box-shadow: 0 0 0 3px rgba(255, 224, 102, 0.3);
+    }
+
+    .audio-controls-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(6, 17, 64, 0.72);
+      padding: 10px 12px;
+      border-radius: 14px;
+    }
+
+    .volume-box { display: flex; align-items: center; gap: 8px; flex: 1; min-width: 150px; }
+    .volume-box input[type="range"] { flex: 1; accent-color: #ffe066; height: 28px; cursor: pointer; }
+
+    .btn-green-pill {
+      min-height: 54px;
+      padding: 12px 24px;
+      border-radius: 18px;
+      border: 3px solid #ffffff;
+      background: linear-gradient(180deg, #2be041 0%, #109421 65%, #096915 100%);
+      color: #ffffff;
+      font-family: 'Fredoka', 'Montserrat', sans-serif;
+      font-weight: 700;
+      font-size: 1.15rem;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+      text-shadow: 0 2px 3px rgba(0, 0, 0, 0.55);
+      cursor: pointer;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.45);
+      transition: transform 0.12s ease, filter 0.15s ease;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .btn-green-pill:active:not(:disabled) { transform: scale(0.97); }
+    .btn-green-pill:disabled { opacity: 0.45; cursor: not-allowed; }
+
+    .btn-gold {
+      min-height: 50px;
+      padding: 10px 20px;
+      border-radius: 16px;
+      border: 2.5px solid #ffffff;
+      background: linear-gradient(180deg, #ffe066 0%, #e0a819 60%, #a87606 100%);
+      color: #1f1400;
+      font-family: 'Fredoka', 'Montserrat', sans-serif;
+      font-weight: 700;
+      font-size: 1rem;
+      text-transform: uppercase;
+      cursor: pointer;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .btn-secondary {
+      min-height: 46px;
+      padding: 8px 14px;
+      border-radius: 14px;
+      border: 2px solid rgba(255, 255, 255, 0.8);
+      background: rgba(16, 46, 140, 0.9);
+      color: #ffffff;
+      font-weight: 700;
+      font-size: 0.88rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .ranking-title {
+      font-family: 'Fredoka', 'Montserrat', sans-serif;
+      font-weight: 700;
+      font-size: 1.08rem;
+      color: #ffe066;
+      margin: 0 0 8px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .ranking-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      max-height: 250px;
+      overflow-y: auto;
+    }
+
+    .ranking-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 8px 10px;
+      border-radius: 10px;
+      background: rgba(6, 17, 64, 0.82);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      font-size: 0.84rem;
+    }
+
+    .ranking-item.top-1 {
+      border-color: #ffe066;
+      background: rgba(245, 184, 46, 0.22);
+    }
+
+    .rank-pos { font-weight: 900; color: #ffe066; min-width: 24px; }
+    .rank-name { flex: 1; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .rank-prize { font-weight: 800; color: #4ade80; white-space: nowrap; }
+    .rank-date { font-size: 0.74rem; color: #cbd5e1; }
+
+    /* =========================================================================
+       APRESENTADOR PROFESSOR LEO (AVATAR COMPACTO INTEGRADO)
+       ========================================================================= */
+    .leo-avatar-wrap {
+      position: relative;
+      width: 68px;
+      height: 76px;
+      flex-shrink: 0;
+      border-radius: 14px;
+      background: radial-gradient(circle at 50% 24%, rgba(255, 230, 128, 0.34) 0%, rgba(30, 64, 175, 0.6) 50%, #060e28 100%);
+      border: 2.5px solid #ffffff;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+    }
+
+    .leo-avatar-wrap.large { width: 120px; height: 136px; border-width: 3px; }
+    .leo-svg { width: 100%; height: 100%; display: block; }
+
+    .leo-torso { transform-origin: 50px 105px; animation: leoBreathing 3.2s ease-in-out infinite alternate; }
+    .leo-head { transform-origin: 50px 64px; transition: transform 0.22s ease; }
+    .leo-brows { transform-origin: 50px 38px; transition: transform 0.2s ease; }
+    .leo-eyelids { transform-origin: 50px 45px; animation: leoBlink 4.6s infinite; }
+    .leo-arm-left { transform-origin: 24px 86px; transition: transform 0.25s ease; }
+    .leo-mic-arm { transform-origin: 76px 94px; transition: transform 0.25s ease; }
+
+    .leo-speaking .leo-head { animation: leoHeadExpressive 0.72s infinite alternate ease-in-out; }
+    .leo-speaking .leo-brows { animation: leoBrowsTalk 0.65s infinite alternate ease-in-out; }
+    .leo-speaking .leo-arm-left { animation: leoGestureLeft 0.85s infinite alternate ease-in-out; }
+    .leo-speaking .leo-mic-arm { animation: leoMicMove 0.75s infinite alternate ease-in-out; }
+    .leo-celebrate .leo-arm-left { transform: rotate(-34deg) translate(-2px, -10px); }
+    .leo-celebrate .leo-mic-arm { transform: rotate(18deg) translate(2px, -8px); }
+    .leo-celebrate .leo-head { animation: leoBounce 0.36s infinite alternate ease-in-out; }
+    .leo-suspense .leo-brows { transform: translateY(-2px) rotate(-5deg); }
+    .leo-suspense .leo-head { transform: rotate(5deg) translateY(1px); }
+
+    @keyframes leoBreathing { 0% { transform: scaleY(1); } 100% { transform: scaleY(1.018); } }
+    @keyframes leoBlink { 0%, 92%, 100% { transform: scaleY(0); } 95% { transform: scaleY(1); } }
+    @keyframes leoHeadExpressive {
+      0% { transform: rotate(-3.2deg) translateY(0px); }
+      50% { transform: rotate(1.2deg) translateY(-2px); }
+      100% { transform: rotate(3.4deg) translateY(0.5px); }
+    }
+    @keyframes leoBrowsTalk { 0% { transform: translateY(0px); } 100% { transform: translateY(-2.2px); } }
+    @keyframes leoGestureLeft { 0% { transform: rotate(0deg) translateY(0px); } 100% { transform: rotate(-16deg) translateY(-5px); } }
+    @keyframes leoMicMove { 0% { transform: rotate(0deg) translateY(0px); } 100% { transform: rotate(-6deg) translateY(-3px); } }
+    @keyframes leoBounce { 0% { transform: translateY(0) scale(1); } 100% { transform: translateY(-5px) scale(1.02); } }
+
+    /* =========================================================================
+       TELA DE JOGO — LAYOUT IDÊNTICO À IMAGEM DE REFERÊNCIA
+       Coluna Esquerda: Card Vermelho da Pergunta + 4 Pílulas Vermelhas (A, B, C, D)
+       Coluna Direita: Moedas + Botão PARAR Verde + Painel AJUDA (6 opções) + 3 Barras de Ouro
+       ========================================================================= */
+    .tv-game-board {
+      flex: 1;
+      width: 100%;
+      height: 100%;
+      min-height: 0;
+      display: grid;
+      grid-template-columns: 1.62fr 1fr;
+      gap: clamp(10px, 1.8vw, 22px);
+      align-items: stretch;
+    }
+
+    @media (max-width: 640px) and (orientation: portrait) {
+      .tv-game-board {
+        grid-template-columns: 1fr;
+        overflow-y: auto;
+      }
+    }
+
+    /* ----- COLUNA ESQUERDA: PERGUNTA + ALTERNATIVAS ----- */
+    .left-question-column {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      min-height: 0;
+      gap: clamp(8px, 1.4vh, 14px);
+      justify-content: space-between;
+    }
+
+    /* Card Vermelho Grande com Borda Dourada (Igual à foto) */
+    .red-question-card {
+      position: relative;
+      flex: 1.25;
+      min-height: 0;
+      background: linear-gradient(180deg, #e01616 0%, #ad0707 58%, #800202 100%);
+      border: 3.5px solid #fde047;
+      outline: 2px solid #ffffff;
+      border-radius: 24px;
+      padding: clamp(12px, 1.8vh, 20px) clamp(16px, 2vw, 24px);
+      box-shadow:
+        0 8px 24px rgba(0, 0, 0, 0.55),
+        inset 0 2px 10px rgba(255, 255, 255, 0.28);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    /* Canto superior direito: Ícone de bloco de notas / utilitários */
+    .card-corner-tools {
+      position: absolute;
+      top: -10px;
+      right: -8px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      z-index: 5;
+    }
+
+    .notepad-badge-btn {
+      width: 44px;
+      height: 44px;
+      border-radius: 11px;
+      background: linear-gradient(180deg, #f3e5c0 0%, #d4be8d 100%);
+      border: 2px solid #ffffff;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.45);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      padding: 0;
+      transition: transform 0.12s ease;
+    }
+
+    .notepad-badge-btn:active { transform: scale(0.93); }
+
+    .card-meta-strip {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 10px;
+      padding-right: 40px;
+    }
+
+    .q-step-badge {
+      background: rgba(0, 0, 0, 0.34);
+      border: 1.5px solid rgba(255, 255, 255, 0.75);
+      color: #fff3b0;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 800;
+      font-size: 0.76rem;
+      padding: 3px 10px;
+      border-radius: 999px;
+      text-transform: uppercase;
+    }
+
+    .timer-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: rgba(0, 0, 0, 0.42);
+      border: 1.5px solid #ffe066;
+      border-radius: 999px;
+      padding: 2px 10px 2px 6px;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 900;
+      font-size: 0.78rem;
+      color: #ffe066;
+    }
+
+    .timer-ring-svg { width: 18px; height: 18px; transform: rotate(-90deg); }
+    .timer-ring-bg { fill: none; stroke: rgba(255, 255, 255, 0.2); stroke-width: 3.5; }
+    .timer-ring-progress {
+      fill: none;
+      stroke: #ffe066;
+      stroke-width: 3.5;
+      stroke-linecap: round;
+      stroke-dasharray: 62.83;
+      stroke-dashoffset: 0;
+      transition: stroke-dashoffset 0.25s linear, stroke 0.2s ease;
+    }
+
+    .timer-pill.warning {
+      border-color: #ffffff;
+      background: #991b1b;
+      color: #ffffff;
+      animation: timerUrgent 0.45s infinite alternate;
+    }
+    .timer-pill.warning .timer-ring-progress { stroke: #ffffff; }
+
+    @keyframes timerUrgent {
+      0% { transform: scale(1); }
+      100% { transform: scale(1.06); }
+    }
+
+    .mini-audio-controls {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .mini-tool-btn {
+      background: rgba(0, 0, 0, 0.34);
+      border: 1.5px solid rgba(255, 255, 255, 0.65);
+      color: #ffffff;
+      border-radius: 999px;
+      padding: 3px 9px;
+      font-size: 0.75rem;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .question-content-body {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      my: auto;
+    }
+
+    .flag-showcase {
+      display: none;
+      width: 136px;
+      flex-shrink: 0;
+      aspect-ratio: 3 / 2;
+      border-radius: 10px;
+      overflow: hidden;
+      border: 2.5px solid #ffffff;
+      box-shadow: 0 5px 14px rgba(0, 0, 0, 0.5);
+      background: #0b173d;
+    }
+
+    .flag-showcase.visible { display: flex; }
+    .flag-showcase img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+    .question-text {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 800;
+      font-size: clamp(1rem, min(2.2vw, 3.1vh), 1.55rem);
+      line-height: 1.32;
+      margin: 0;
+      color: #ffffff;
+      text-transform: uppercase;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.55);
+    }
+
+    /* Faixa discreta da fala do Professor Leo dentro da área da pergunta */
+    .host-subtitle-strip {
+      margin-top: 6px;
+      padding-top: 6px;
+      border-top: 1px solid rgba(255, 255, 255, 0.22);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .host-mini-avatar {
+      width: 38px;
+      height: 42px;
+      border-radius: 10px;
+      border: 1.5px solid #ffe066;
+      overflow: hidden;
+      flex-shrink: 0;
+      background: #091b5c;
+    }
+
+    .host-speech-line {
+      margin: 0;
+      font-size: 0.82rem;
+      line-height: 1.3;
+      color: #fef08a;
+      font-weight: 600;
+    }
+
+    /* ----- 4 ALTERNATIVAS (MOEDA DOURADA + PÍLULA VERMELHA COM BORDA DOURADA) ----- */
+    .options-stack {
+      flex: 1.35;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: clamp(7px, 1.2vh, 12px);
+    }
+
+    .option-row {
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      align-items: center;
+      gap: clamp(8px, 1.2vw, 14px);
+      width: 100%;
+    }
+
+    .option-coin-badge {
+      height: 100%;
+      max-height: 68px;
+      min-height: 44px;
+      aspect-ratio: 1 / 1;
+      border-radius: 50%;
+      background: radial-gradient(circle at 32% 28%, #fff399 0%, #eab308 55%, #9a6d06 100%);
+      border: 3px solid #fef08a;
+      box-shadow:
+        0 5px 12px rgba(0, 0, 0, 0.5),
+        inset 0 0 0 3px rgba(161, 98, 7, 0.55);
+      color: #1c1917;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 900;
+      font-size: clamp(1.2rem, 2.6vh, 1.75rem);
+      text-shadow: 0 1px 0 rgba(255, 255, 255, 0.6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: transform 0.15s ease, filter 0.2s ease;
+    }
+
+    .option-btn {
+      flex: 1;
+      height: 100%;
+      max-height: 68px;
+      min-height: 44px;
+      padding: 6px clamp(14px, 2vw, 24px);
+      border-radius: 20px;
+      border: 3px solid #fde047;
+      outline: 1.5px solid #ffffff;
+      background: linear-gradient(180deg, #e01616 0%, #a60606 55%, #780202 100%);
+      color: #ffffff;
+      text-align: left;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      box-shadow:
+        0 6px 15px rgba(0, 0, 0, 0.48),
+        inset 0 2px 6px rgba(255, 255, 255, 0.24);
+      transition: transform 0.12s ease, background 0.2s ease, opacity 0.25s ease;
+    }
+
+    .option-btn:active:not(:disabled) { transform: scale(0.985); }
+    .option-btn:disabled { cursor: default; }
+
+    .option-label {
+      font-family: 'Montserrat', sans-serif;
+      font-size: clamp(0.98rem, 2.1vw, 1.24rem);
+      font-weight: 800;
+      line-height: 1.2;
+      text-transform: uppercase;
+      text-shadow: 0 2px 3px rgba(0, 0, 0, 0.5);
+    }
+
+    .option-row.eliminated .option-coin-badge,
+    .option-row.eliminated .option-btn {
+      opacity: 0.24;
+      filter: grayscale(0.8);
+      pointer-events: none;
+    }
+    .option-row.eliminated .option-label { text-decoration: line-through; }
+
+    .option-row.selected .option-btn {
+      background: linear-gradient(180deg, #f59e0b 0%, #b45309 100%);
+      border-color: #fff3b0;
+      box-shadow: 0 0 22px rgba(251, 191, 36, 0.85);
+    }
+    .option-row.selected .option-coin-badge { transform: scale(1.06); }
+
+    .option-row.suspense-blink .option-btn {
+      animation: suspenseFlash 0.32s infinite alternate;
+    }
+
+    @keyframes suspenseFlash {
+      0% { background: linear-gradient(180deg, #f59e0b 0%, #b45309 100%); transform: scale(1.01); }
+      100% { background: linear-gradient(180deg, #df1616 0%, #780202 100%); transform: scale(1); }
+    }
+
+    .option-row.correct .option-btn {
+      background: linear-gradient(180deg, #2be041 0%, #0e7c1c 100%) !important;
+      border-color: #ffffff !important;
+      box-shadow: 0 0 26px rgba(34, 197, 94, 0.9) !important;
+      animation: none !important;
+    }
+
+    .option-row.wrong .option-btn {
+      background: linear-gradient(180deg, #475569 0%, #1e293b 100%) !important;
+      border-color: #fca5a5 !important;
+      animation: none !important;
+    }
+
+    /* Barra de Confirmação ("Tem certeza?") */
+    .confirm-bar {
+      display: none;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+      padding: 12px 16px;
+      background: linear-gradient(180deg, #d97706 0%, #92400e 100%);
+      border: 3px solid #ffffff;
+      border-radius: 20px;
+      box-shadow: 0 8px 22px rgba(0, 0, 0, 0.55);
+      animation: popIn 0.18s ease-out;
+    }
+    .confirm-bar.visible { display: flex; }
+
+    @keyframes popIn {
+      from { transform: scale(0.95); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    .confirm-question {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 800;
+      font-size: 0.98rem;
+      color: #ffffff;
+    }
+
+    .confirm-buttons { display: flex; gap: 8px; flex: 1; justify-content: flex-end; min-width: 190px; }
+
+    .btn-yes {
+      min-height: 44px;
+      min-width: 88px;
+      padding: 8px 16px;
+      border-radius: 14px;
+      border: 2.5px solid #ffffff;
+      background: linear-gradient(180deg, #2be041 0%, #108a1f 100%);
+      color: #ffffff;
+      font-family: 'Fredoka', sans-serif;
+      font-weight: 700;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+
+    .btn-no {
+      min-height: 44px;
+      min-width: 88px;
+      padding: 8px 16px;
+      border-radius: 14px;
+      border: 2.5px solid #ffffff;
+      background: linear-gradient(180deg, #ef4444 0%, #991b1b 100%);
+      color: #ffffff;
+      font-family: 'Fredoka', sans-serif;
+      font-weight: 700;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+
+    /* =========================================================================
+       COLUNA DIREITA: MOEDAS + PARAR + PAINEL AJUDA (6 BOTÕES) + 3 BARRAS DE OURO
+       ========================================================================= */
+    .right-hud-column {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      min-height: 0;
+      justify-content: space-between;
+      gap: clamp(8px, 1.3vh, 14px);
+    }
+
+    .ajuda-box-wrapper {
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .ajuda-panel-box {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    /* Topo Direito: Contador de Moedas + Botão Verde PARAR */
+    .hud-top-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .coins-display {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 10px;
+      cursor: pointer;
+    }
+
+    .coins-count-text {
+      font-family: 'Fredoka', 'Montserrat', sans-serif;
+      font-weight: 700;
+      font-size: clamp(1.65rem, 3.2vw, 2.2rem);
+      color: #ffffff;
+      text-shadow: 0 3px 0 rgba(0, 0, 0, 0.45);
+      line-height: 1;
+    }
+
+    .gold-dollar-coin {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 32% 28%, #fff399 0%, #f5c024 55%, #a87505 100%);
+      border: 2.5px solid #fff7cc;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.45);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Fredoka', sans-serif;
+      font-weight: 700;
+      font-size: 1.25rem;
+      color: #b88108;
+      text-shadow: 0 1px 0 #fff7cc;
+    }
+
+    .btn-parar-tv {
+      flex: 1;
+      max-width: 215px;
+      min-height: 62px;
+      padding: 8px 18px;
+      border-radius: 22px;
+      border: 3.5px solid #ffffff;
+      background: linear-gradient(180deg, #27d63c 0%, #0f9920 55%, #086e14 100%);
+      color: #ffffff;
+      font-family: 'Fredoka', 'Montserrat', sans-serif;
+      font-weight: 700;
+      font-size: clamp(1.4rem, 2.6vw, 1.85rem);
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+      text-shadow: 0 3px 0 rgba(0, 0, 0, 0.38);
+      box-shadow:
+        0 6px 16px rgba(0, 0, 0, 0.48),
+        inset 0 2px 8px rgba(255, 255, 255, 0.35);
+      cursor: pointer;
+      transition: transform 0.12s ease;
+    }
+
+    .btn-parar-tv:active:not(:disabled) { transform: scale(0.96); }
+    .btn-parar-tv:disabled { opacity: 0.45; cursor: not-allowed; }
+
+    /* Caixa AJUDA com título branco grande sobreposto à borda (Idêntico à foto) */
+    .ajuda-box-wrapper {
+      position: relative;
+      padding-top: 22px;
+    }
+
+    .ajuda-header-title {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 3;
+      font-family: 'Fredoka', 'Montserrat', sans-serif;
+      font-weight: 700;
+      font-size: clamp(1.85rem, 3.4vw, 2.45rem);
+      color: #ffffff;
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+      line-height: 1;
+      text-shadow:
+        0 4px 0 #091d66,
+        0 6px 12px rgba(0, 0, 0, 0.65);
+      pointer-events: none;
+      white-space: nowrap;
+    }
+
+    .ajuda-panel-box {
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      background: linear-gradient(180deg, rgba(28, 72, 196, 0.62) 0%, rgba(16, 45, 138, 0.78) 100%);
+      border: 2.5px solid rgba(255, 255, 255, 0.85);
+      border-radius: 22px;
+      padding: clamp(24px, 3.6vh, 32px) clamp(10px, 1.4vw, 16px) clamp(10px, 1.6vh, 16px);
+      box-shadow:
+        0 8px 22px rgba(0, 0, 0, 0.45),
+        inset 0 0 18px rgba(96, 165, 250, 0.22);
+    }
+
+    .ajuda-grid-6 {
+      flex: 1;
+      min-height: 0;
+      width: 100%;
+      height: 100%;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      grid-template-rows: repeat(2, 1fr);
+      gap: clamp(8px, 1.4vh, 14px) clamp(6px, 1vw, 12px);
+      align-items: stretch;
+      justify-items: stretch;
+    }
+
+    .ajuda-item-btn {
+      width: 100%;
+      height: 100%;
+      min-height: 0;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1.5px solid rgba(255, 255, 255, 0.16);
+      border-radius: 16px;
+      padding: clamp(6px, 1vh, 12px) 4px;
+      color: #ffffff;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: clamp(4px, 0.9vh, 8px);
+      transition: transform 0.14s ease, opacity 0.2s ease, background 0.15s ease;
+    }
+
+    .ajuda-item-btn:hover:not(:disabled) {
+      transform: translateY(-2px) scale(1.03);
+      background: rgba(255, 255, 255, 0.12);
+    }
+    .ajuda-item-btn:active:not(:disabled) { transform: scale(0.95); }
+
+    .ajuda-item-btn:disabled {
+      opacity: 0.34;
+      filter: grayscale(0.75);
+      cursor: not-allowed;
+    }
+
+    .ajuda-icon-stage {
+      position: relative;
+      width: clamp(78px, min(11vw, 16vh), 124px);
+      height: clamp(62px, min(8.8vw, 13vh), 98px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .ajuda-icon-stage svg {
+      width: 100% !important;
+      height: 100% !important;
+      overflow: visible;
+    }
+
+    .ajuda-cost-tag {
+      position: absolute;
+      top: -4px;
+      right: -6px;
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      background: rgba(9, 24, 84, 0.88);
+      border: 1.5px solid #fde047;
+      border-radius: 999px;
+      padding: 1px 6px;
+      font-family: 'Fredoka', 'Montserrat', sans-serif;
+      font-weight: 700;
+      font-size: clamp(0.82rem, 1.3vw, 1.05rem);
+      color: #ffffff;
+      text-shadow: 0 2px 3px rgba(0, 0, 0, 0.85);
+    }
+
+    .mini-coin-dot {
+      width: clamp(14px, 1.6vw, 18px);
+      height: clamp(14px, 1.6vw, 18px);
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 30%, #fff399, #eab308);
+      border: 1px solid #fff;
+      display: inline-block;
+    }
+
+    .ajuda-item-label {
+      font-family: 'Inter', 'Montserrat', sans-serif;
+      font-weight: 800;
+      font-size: clamp(0.9rem, min(1.45vw, 2.1vh), 1.22rem);
+      color: #ffffff;
+      text-shadow: 0 2px 3px rgba(0, 0, 0, 0.65);
+      text-align: center;
+      line-height: 1.1;
+    }
+
+    /* ----- 3 BARRAS DE OURO INFERIORES: ERRAR | PARAR | ACERTAR (IGUAL À FOTO) ----- */
+    .gold-ingots-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      padding-top: 2px;
+    }
+
+    .ingot-stake-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .ingot-svg-wrap {
+      position: relative;
+      width: 100%;
+      max-width: 112px;
+      aspect-ratio: 112 / 54;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      filter: drop-shadow(0 5px 8px rgba(0, 0, 0, 0.55));
+    }
+
+    .ingot-svg-wrap svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .ingot-amount-text {
+      position: absolute;
+      top: 52%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 900;
+      font-size: clamp(0.76rem, 1.45vw, 0.96rem);
+      color: #6b1406;
+      text-shadow: 0 1px 0 rgba(255, 245, 180, 0.85);
+      white-space: nowrap;
+      letter-spacing: -0.02em;
+    }
+
+    .ingot-label-text {
+      font-family: 'Inter', 'Montserrat', sans-serif;
+      font-weight: 700;
+      font-size: 0.92rem;
+      color: #ffffff;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.7);
+    }
+
+    /* =========================================================================
+       MODAIS (CARTAS, PLACAS, CONVIDADOS, GURU, GÊNIO, ESCADA DE PRÊMIOS)
+       ========================================================================= */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 50;
+      background: rgba(3, 10, 38, 0.84);
+      backdrop-filter: blur(4px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+    .modal-backdrop.open { display: flex; }
+
+    .modal-box {
+      width: 100%;
+      max-width: 500px;
+      padding: 20px;
+      position: relative;
+      animation: popIn 0.2s ease-out;
+      max-height: 88dvh;
+      overflow-y: auto;
+      background: linear-gradient(180deg, #14369e 0%, #091b5c 100%);
+      border: 3px solid #ffffff;
+      border-radius: 24px;
+      box-shadow: 0 14px 36px rgba(0, 0, 0, 0.65);
+    }
+
+    .modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+    }
+
+    .modal-title {
+      font-family: 'Fredoka', 'Montserrat', sans-serif;
+      font-weight: 700;
+      font-size: 1.25rem;
+      color: #ffe066;
+      margin: 0;
+    }
+
+    .icon-btn {
+      min-height: 40px;
+      min-width: 40px;
+      border-radius: 12px;
+      border: 2px solid #ffffff;
+      background: #b91c1c;
+      color: #fff;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    /* Cartas */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      margin: 16px 0;
+    }
+
+    .playing-card {
+      aspect-ratio: 2.4 / 3.4;
+      border-radius: 12px;
+      border: 2.5px solid #ffffff;
+      background: linear-gradient(135deg, #dc1414 0%, #7f0404 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 900;
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.5);
+    }
+
+    .playing-card.flipped { background: #ffffff; color: #0f172a; border-color: #ffe066; }
+    .playing-card.flipped.red-suit { color: #dc2626; }
+    .card-rank { font-size: 1.65rem; line-height: 1; }
+    .card-sub { font-size: 0.72rem; margin-top: 4px; text-align: center; padding: 0 4px; }
+
+    /* Placas */
+    .audience-bars {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      height: 185px;
+      align-items: end;
+      padding: 16px 10px 8px;
+      background: rgba(5, 14, 48, 0.78);
+      border: 1.5px solid rgba(255, 255, 255, 0.35);
+      border-radius: 14px;
+      margin: 12px 0;
+    }
+
+    .bar-col { display: flex; flex-direction: column; align-items: center; height: 100%; justify-content: flex-end; gap: 6px; }
+    .bar-pct { font-weight: 800; font-size: 0.85rem; color: #ffe066; }
+    .bar-fill { width: 100%; max-width: 48px; background: linear-gradient(180deg, #4ade80 0%, #16a34a 100%); border: 2px solid #ffffff; border-radius: 8px 8px 3px 3px; min-height: 6px; }
+    .bar-letter { font-weight: 900; font-size: 1rem; color: #fff; }
+
+    /* Convidados */
+    .students-list { display: flex; flex-direction: column; gap: 10px; margin: 12px 0; }
+    .student-card {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 12px;
+      border-radius: 14px;
+      background: rgba(5, 14, 48, 0.78);
+      border: 1.5px solid rgba(255, 255, 255, 0.35);
+    }
+    .student-badge {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #38bdf8, #1d4ed8);
+      border: 2px solid #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      font-size: 1.05rem;
+      flex-shrink: 0;
+    }
+    .student-guess {
+      margin-left: auto;
+      font-family: 'Fredoka', sans-serif;
+      font-weight: 700;
+      font-size: 1.2rem;
+      padding: 6px 14px;
+      border-radius: 12px;
+      background: #22c55e;
+      border: 2px solid #ffffff;
+      color: #ffffff;
+    }
+
+    /* Escada de Prêmios Modal */
+    .ladder-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column-reverse;
+      gap: 5px;
+    }
+    .ladder-step {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 7px 12px;
+      border-radius: 10px;
+      font-size: 0.86rem;
+      font-weight: 700;
+      color: #cbd5e1;
+      background: rgba(5, 14, 48, 0.65);
+    }
+    .ladder-step.milestone { color: #ffe066; }
+    .ladder-step.passed { color: #4ade80; background: rgba(22, 163, 74, 0.22); }
+    .ladder-step.current {
+      background: linear-gradient(90deg, #ffe066, #eab308);
+      color: #1f1400;
+      font-weight: 900;
+      border: 2px solid #ffffff;
+    }
+
+    /* =========================================================================
+       TELA FINAL, MALETA DE OURO & CERTIFICADO
+       ========================================================================= */
+    .end-container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      padding: 8px 0;
+      max-width: 820px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    .end-card {
+      width: 100%;
+      padding: 22px 18px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .end-headline {
+      font-family: 'Fredoka', 'Montserrat', sans-serif;
+      font-weight: 700;
+      font-size: clamp(1.5rem, 4.5vw, 2.4rem);
+      margin: 0;
+      color: #ffe066;
+      text-transform: uppercase;
+    }
+
+    .end-prize-amount {
+      font-family: 'Fredoka', 'Montserrat', sans-serif;
+      font-weight: 700;
+      font-size: clamp(1.9rem, 6vw, 3.1rem);
+      color: #4ade80;
+      text-shadow: 0 3px 10px rgba(0, 0, 0, 0.5);
+      margin: 0;
+    }
+
+    .briefcase-stage { margin: 4px auto; display: flex; flex-direction: column; align-items: center; gap: 8px; }
+    .briefcase-lid { transform-origin: 50% 48%; transition: transform 0.85s cubic-bezier(0.22, 1, 0.36, 1); }
+    .briefcase-box.opened .briefcase-lid { transform: translateY(-28px) scaleY(0.86); }
+    .gold-bars-caption { font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 0.95rem; color: #ffe066; }
+
+    .certificate-preview-wrap {
+      width: 100%;
+      max-width: 520px;
+      border-radius: 14px;
+      overflow: hidden;
+      border: 3px solid #ffffff;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.55);
+      display: none;
+    }
+    .certificate-preview-wrap.visible { display: block; }
+    #certificateCanvas { width: 100%; height: auto; display: block; }
+    .end-actions { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; width: 100%; }
+
+    #confettiCanvas { position: fixed; inset: 0; z-index: 60; pointer-events: none; }
+
+    .toast-msg {
+      position: fixed;
+      bottom: calc(18px + var(--safe-bottom));
+      left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: rgba(9, 24, 84, 0.96);
+      border: 2px solid #ffffff;
+      color: #fff;
+      padding: 10px 18px;
+      border-radius: 999px;
+      font-size: 0.88rem;
+      font-weight: 700;
+      z-index: 90;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease, transform 0.25s ease;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+    }
+    .toast-msg.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+    /* Player de Áudio YouTube oculto (sincronizado com timestamps oficiais) */
+    #ytAudioHost {
+      position: fixed;
+      width: 1px;
+      height: 1px;
+      bottom: 0;
+      right: 0;
+      opacity: 0.001;
+      pointer-events: none;
+      z-index: -1;
+      overflow: hidden;
+    }
+  </style>
+</head>
+<body>
+  <div id="ytAudioHost" aria-hidden="true"><div id="ytPlayerFrame"></div></div>
+  <div class="tv-stage" id="tvStage" aria-hidden="true">
+    <div class="spotlight spotlight-left"></div>
+    <div class="spotlight spotlight-right"></div>
+  </div>
+
+  <canvas id="confettiCanvas"></canvas>
+  <div id="toastMsg" class="toast-msg" role="status" aria-live="polite"></div>
+
+  <div class="app-wrapper">
+    <!-- =======================================================================
+         TELA 1: INÍCIO
+         ======================================================================= -->
+    <section id="startScreen" class="screen active">
+      <div class="start-container">
+        <div class="logo-badge">
+          <span class="logo-subtitle-top">Edição Especial Geografia</span>
+          <h1 class="game-title">Rumo ao Milhão</h1>
+          <p class="game-tagline">16 desafios pelo mundo até o grande prêmio em barras de ouro!</p>
+        </div>
+
+        <div class="start-grid">
+          <div class="classic-panel start-card">
+            <div class="host-welcome">
+              <div class="leo-avatar-wrap" id="leoLobbyAvatar"></div>
+              <div class="host-welcome-text">
+                <strong>Professor Leo</strong>
+                <p>"Olá, participante! Prepare seus conhecimentos de geografia. Use suas ajudas, moedas, o Guru e o Gênio para chegar ao milhão!"</p>
+              </div>
+            </div>
+
+            <div class="input-group">
+              <label for="playerNameInput">Seu nome no programa</label>
+              <input
+                type="text"
+                id="playerNameInput"
+                class="player-input"
+                maxlength="24"
+                placeholder="Digite seu nome (ex: Mariana)"
+                autocomplete="name"
+              />
+            </div>
+
+            <div class="audio-controls-row">
+              <button type="button" id="lobbyVoiceBtn" class="btn-secondary" aria-label="Alternar voz do apresentador">
+                🔊 Voz: Ligada
+              </button>
+              <div class="volume-box">
+                <span title="Volume da música e efeitos">🎵</span>
+                <input type="range" id="lobbyVolumeSlider" min="0" max="100" value="72" aria-label="Volume do áudio" />
+              </div>
+            </div>
+
+            <button type="button" id="startGameBtn" class="btn-green-pill" style="width: 100%; font-size: 1.25rem;">
+              🎬 ENTRAR NO PALCO E JOGAR
+            </button>
+          </div>
+
+          <div class="classic-panel start-card">
+            <div>
+              <h2 class="ranking-title">🏆 Melhores Resultados (Top 10)</h2>
+              <ul id="lobbyRankingList" class="ranking-list"></ul>
+            </div>
+            <div style="font-size: 0.8rem; color: #e2e8f0; line-height: 1.4;">
+              💡 <strong>Novas Ajudas:</strong> Você começa com <strong>100 moedas</strong> e ganha moedas a cada acerto para consultar o <strong>Guru (20)</strong> ou invocar o <strong>Gênio (50)</strong>!
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =======================================================================
+         TELA 2: PALCO PRINCIPAL DO JOGO (LAYOUT IDÊNTICO À IMAGEM)
+         ======================================================================= -->
+    <section id="gameScreen" class="screen">
+      <div class="tv-game-board">
+        <!-- COLUNA ESQUERDA: PERGUNTA VERMELHA + 4 OPÇÕES (A, B, C, D) -->
+        <div class="left-question-column">
+          <div class="red-question-card">
+            <!-- Ícone de Bloco de Notas no canto superior direito (igual à foto) -->
+            <div class="card-corner-tools">
+              <button type="button" id="openLadderNotesBtn" class="notepad-badge-btn" title="Ver Escada de Prêmios">
+                <svg width="26" height="26" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+                  <rect x="4" y="4" width="24" height="24" rx="4" fill="#efe2c4" stroke="#b09768" stroke-width="1.5"/>
+                  <line x1="8" y1="11" x2="22" y2="11" stroke="#b59d72" stroke-width="1.6" stroke-linecap="round"/>
+                  <line x1="8" y1="16" x2="19" y2="16" stroke="#b59d72" stroke-width="1.6" stroke-linecap="round"/>
+                  <line x1="8" y1="21" x2="21" y2="21" stroke="#b59d72" stroke-width="1.6" stroke-linecap="round"/>
+                  <path d="M16 20 L25 9 L28 11.5 L19 22.5 L15 23.5 Z" fill="#7c4a21"/>
+                  <polygon points="25,9 28,11.5 29.5,9.5 26.5,7" fill="#d97706"/>
+                </svg>
+              </button>
+            </div>
+
+            <!-- Barra discreta de status: Pergunta X/16, Relógio 30s e Controles Rápidos -->
+            <div class="card-meta-strip">
+              <span class="q-step-badge" id="questionCounterPill">Pergunta 1 / 16</span>
+              <div class="timer-pill" id="timerPill" aria-label="Tempo restante">
+                <svg class="timer-ring-svg" viewBox="0 0 24 24">
+                  <circle class="timer-ring-bg" cx="12" cy="12" r="10"></circle>
+                  <circle class="timer-ring-progress" id="timerRingProgress" cx="12" cy="12" r="10"></circle>
+                </svg>
+                <span id="timerText">30s</span>
+              </div>
+              <div class="mini-audio-controls">
+                <button type="button" id="repeatSpeechBtn" class="mini-tool-btn" title="Repetir leitura">🔁 Ler</button>
+                <button type="button" id="toggleVoiceBtn" class="mini-tool-btn" title="Ligar/Desligar voz">🔊</button>
+                <button type="button" id="toggleMuteAudioBtn" class="mini-tool-btn" title="Ligar/Desligar som">🎵</button>
+              </div>
+            </div>
+
+            <!-- Conteúdo da Pergunta + Bandeira (quando houver) -->
+            <div class="question-content-body">
+              <div class="flag-showcase" id="flagShowcase">
+                <img id="flagImage" src="" alt="Bandeira do país" />
+              </div>
+              <h2 class="question-text" id="questionText">CARREGANDO PERGUNTA...</h2>
+            </div>
+
+            <!-- Apresentador Professor Leo compacto na base do quadro -->
+            <div class="host-subtitle-strip">
+              <div class="host-mini-avatar" id="leoGameAvatar"></div>
+              <p class="host-speech-line" id="hostSpeechText">Preparado? Vamos à primeira pergunta!</p>
+            </div>
+          </div>
+
+          <!-- Barra de Confirmação ("Tem certeza?") -->
+          <div class="confirm-bar" id="confirmBar" role="region" aria-label="Confirmar resposta">
+            <span class="confirm-question" id="confirmPromptText">Você marcou a letra A. Tem certeza?</span>
+            <div class="confirm-buttons">
+              <button type="button" id="confirmYesBtn" class="btn-yes">✔ Sim</button>
+              <button type="button" id="confirmNoBtn" class="btn-no">✖ Não</button>
+            </div>
+          </div>
+
+          <!-- 4 Alternativas (Moeda Dourada A,B,C,D + Pílula Vermelha) -->
+          <div class="options-stack" id="optionsGrid">
+            <div class="option-row" data-row-index="0">
+              <div class="option-coin-badge">A</div>
+              <button type="button" class="option-btn" data-index="0">
+                <span class="option-label" id="optText0">ALTERNATIVA A</span>
+              </button>
+            </div>
+            <div class="option-row" data-row-index="1">
+              <div class="option-coin-badge">B</div>
+              <button type="button" class="option-btn" data-index="1">
+                <span class="option-label" id="optText1">ALTERNATIVA B</span>
+              </button>
+            </div>
+            <div class="option-row" data-row-index="2">
+              <div class="option-coin-badge">C</div>
+              <button type="button" class="option-btn" data-index="2">
+                <span class="option-label" id="optText2">ALTERNATIVA C</span>
+              </button>
+            </div>
+            <div class="option-row" data-row-index="3">
+              <div class="option-coin-badge">D</div>
+              <button type="button" class="option-btn" data-index="3">
+                <span class="option-label" id="optText3">ALTERNATIVA D</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- COLUNA DIREITA: MOEDAS + PARAR + AJUDA (6 OPÇÕES) + 3 BARRAS DE OURO -->
+        <aside class="right-hud-column">
+          <!-- Topo: 100 Moedas + Botão Verde PARAR -->
+          <div class="hud-top-row">
+            <div class="coins-display" id="coinsInfoBtn" title="Suas moedas para usar Guru e Gênio">
+              <span class="coins-count-text" id="coinsCountText">100</span>
+              <div class="gold-dollar-coin">$</div>
+            </div>
+            <button type="button" id="stopGameBtn" class="btn-parar-tv">PARAR</button>
+          </div>
+
+          <!-- Caixa AJUDA com 6 opções (Cartas, Placas, Convidados, Pular, Guru, Gênio) -->
+          <div class="ajuda-box-wrapper">
+            <div class="ajuda-header-title">AJUDA</div>
+            <div class="ajuda-panel-box">
+              <div class="ajuda-grid-6">
+                <!-- 1. CARTAS -->
+                <button type="button" id="helpCardsBtn" class="ajuda-item-btn">
+                  <div class="ajuda-icon-stage">
+                    <svg width="62" height="50" viewBox="0 0 64 52" xmlns="http://www.w3.org/2000/svg">
+                      <g transform="rotate(-24 22 36)">
+                        <rect x="10" y="8" width="22" height="32" rx="3" fill="#e2e8f0" stroke="#475569" stroke-width="1.2"/>
+                        <text x="13" y="17" font-size="8" font-weight="900" fill="#0f172a">A</text>
+                        <text x="18" y="29" font-size="11" fill="#0f172a">♠</text>
+                      </g>
+                      <g transform="rotate(-8 28 36)">
+                        <rect x="18" y="6" width="22" height="32" rx="3" fill="#f8fafc" stroke="#475569" stroke-width="1.2"/>
+                        <text x="21" y="15" font-size="8" font-weight="900" fill="#0f172a">A</text>
+                        <text x="26" y="27" font-size="11" fill="#0f172a">♣</text>
+                      </g>
+                      <g transform="rotate(10 34 36)">
+                        <rect x="25" y="6" width="22" height="32" rx="3" fill="#ffffff" stroke="#475569" stroke-width="1.2"/>
+                        <text x="28" y="15" font-size="8" font-weight="900" fill="#dc2626">A</text>
+                        <text x="33" y="27" font-size="11" fill="#dc2626">♦</text>
+                      </g>
+                      <g transform="rotate(28 40 36)">
+                        <rect x="31" y="8" width="22" height="32" rx="3" fill="#ffffff" stroke="#334155" stroke-width="1.2"/>
+                        <text x="34" y="17" font-size="8" font-weight="900" fill="#dc2626">A</text>
+                        <text x="39" y="29" font-size="11" fill="#dc2626">♥</text>
+                      </g>
+                    </svg>
+                  </div>
+                  <span class="ajuda-item-label">Cartas</span>
+                </button>
+
+                <!-- 2. PLACAS -->
+                <button type="button" id="helpAudienceBtn" class="ajuda-item-btn">
+                  <div class="ajuda-icon-stage">
+                    <svg width="62" height="50" viewBox="0 0 64 52" xmlns="http://www.w3.org/2000/svg">
+                      <rect x="20" y="4" width="24" height="20" rx="3" fill="#4299e1" stroke="#2b6cb0" stroke-width="1.2"/>
+                      <text x="32" y="19" text-anchor="middle" font-family="Montserrat, sans-serif" font-weight="900" font-size="13" fill="#ffffff">A</text>
+                      <rect x="8" y="26" width="23" height="20" rx="3" fill="#ecc94b" stroke="#b7791f" stroke-width="1.2"/>
+                      <text x="19.5" y="41" text-anchor="middle" font-family="Montserrat, sans-serif" font-weight="900" font-size="13" fill="#ffffff">B</text>
+                      <rect x="33" y="26" width="23" height="20" rx="3" fill="#48bb78" stroke="#276749" stroke-width="1.2"/>
+                      <text x="44.5" y="41" text-anchor="middle" font-family="Montserrat, sans-serif" font-weight="900" font-size="13" fill="#ffffff">C</text>
+                    </svg>
+                  </div>
+                  <span class="ajuda-item-label">Placas</span>
+                </button>
+
+                <!-- 3. CONVIDADOS -->
+                <button type="button" id="helpStudentsBtn" class="ajuda-item-btn">
+                  <div class="ajuda-icon-stage">
+                    <svg width="64" height="50" viewBox="0 0 66 52" xmlns="http://www.w3.org/2000/svg">
+                      <!-- Pessoa esquerda -->
+                      <circle cx="18" cy="16" r="7" fill="#d97706"/>
+                      <circle cx="18" cy="17" r="6" fill="#f3c69f"/>
+                      <path d="M6,42 C6,31 30,31 30,42 Z" fill="#0284c7"/>
+                      <!-- Pessoa direita -->
+                      <circle cx="48" cy="16" r="7.5" fill="#991b1b"/>
+                      <circle cx="48" cy="17" r="6" fill="#f3c69f"/>
+                      <path d="M36,42 C36,31 60,31 60,42 Z" fill="#cbd5e1"/>
+                      <!-- Pessoa centro -->
+                      <circle cx="33" cy="21" r="7.5" fill="#1e293b"/>
+                      <circle cx="33" cy="22" r="6.5" fill="#eab68d"/>
+                      <path d="M19,48 C19,35 47,35 47,48 Z" fill="#10b981"/>
+                    </svg>
+                  </div>
+                  <span class="ajuda-item-label">Convidados</span>
+                </button>
+
+                <!-- 4. PULAR (SETA VERDE + MEDALHA COM NÚMERO) -->
+                <button type="button" id="helpSkipBtn" class="ajuda-item-btn">
+                  <div class="ajuda-icon-stage">
+                    <svg width="62" height="50" viewBox="0 0 64 52" xmlns="http://www.w3.org/2000/svg">
+                      <!-- Três barras + Seta verde -->
+                      <rect x="14" y="17" width="3" height="18" rx="1" fill="#16a34a"/>
+                      <rect x="19" y="17" width="3" height="18" rx="1" fill="#16a34a"/>
+                      <polygon points="25,17 38,17 38,10 53,26 38,42 38,35 25,35" fill="#16a34a" stroke="#14532d" stroke-width="1.2"/>
+                      <!-- Medalha redonda vermelha com borda dourada -->
+                      <circle cx="16" cy="36" r="9.5" fill="#991b1b" stroke="#fde047" stroke-width="2"/>
+                      <text id="skipCountSvgText" x="16" y="40" text-anchor="middle" font-family="Montserrat, sans-serif" font-weight="900" font-size="11" fill="#ffffff">3</text>
+                    </svg>
+                  </div>
+                  <span class="ajuda-item-label" id="skipBtnLabel">Pular</span>
+                </button>
+
+                <!-- 5. GURU (20 MOEDAS) -->
+                <button type="button" id="helpGuruBtn" class="ajuda-item-btn">
+                  <div class="ajuda-icon-stage">
+                    <svg width="62" height="50" viewBox="0 0 64 52" xmlns="http://www.w3.org/2000/svg">
+                      <!-- Cabelo grisalho espetado -->
+                      <path d="M18,22 Q16,10 26,11 Q32,6 39,11 Q48,11 46,22 Z" fill="#cbd5e1"/>
+                      <!-- Rosto -->
+                      <circle cx="32" cy="23" r="10" fill="#f3c69f"/>
+                      <!-- Óculos -->
+                      <circle cx="28" cy="22" r="3.5" fill="#ffffff" stroke="#475569" stroke-width="1.2"/>
+                      <circle cx="35" cy="22" r="3.5" fill="#ffffff" stroke="#475569" stroke-width="1.2"/>
+                      <circle cx="28" cy="22" r="1.2" fill="#0f172a"/>
+                      <circle cx="35" cy="22" r="1.2" fill="#0f172a"/>
+                      <!-- Terno marrom -->
+                      <path d="M20,48 C20,35 44,35 44,48 Z" fill="#7c2d12"/>
+                      <polygon points="30,35 34,35 32,45" fill="#38bdf8"/>
+                      <!-- Telefone vermelho -->
+                      <path d="M16,22 Q11,32 18,42" stroke="#dc2626" stroke-width="5" stroke-linecap="round" fill="none"/>
+                      <circle cx="16" cy="21" r="3.5" fill="#dc2626"/>
+                      <circle cx="19" cy="42" r="3.5" fill="#dc2626"/>
+                    </svg>
+                    <span class="ajuda-cost-tag">20<span class="mini-coin-dot"></span></span>
+                  </div>
+                  <span class="ajuda-item-label">Guru</span>
+                </button>
+
+                <!-- 6. GÊNIO (50 MOEDAS) -->
+                <button type="button" id="helpGenieBtn" class="ajuda-item-btn">
+                  <div class="ajuda-icon-stage">
+                    <svg width="62" height="50" viewBox="0 0 64 52" xmlns="http://www.w3.org/2000/svg">
+                      <!-- Corpo de fumaça azul do gênio -->
+                      <path d="M24,18 C16,20 15,31 24,33 C30,34 34,38 38,41 L42,41 C37,35 39,28 33,24 C36,21 34,15 28,15 Z" fill="#38bdf8"/>
+                      <!-- Turbante -->
+                      <ellipse cx="28" cy="12" rx="6" ry="4" fill="#0284c7"/>
+                      <circle cx="28" cy="10" r="1.8" fill="#fde047"/>
+                      <!-- Lâmpada mágica dourada -->
+                      <ellipse cx="42" cy="43" rx="9" ry="4" fill="#eab308" stroke="#a16207" stroke-width="1"/>
+                      <path d="M33,43 L27,39 L34,41 Z" fill="#eab308"/>
+                      <path d="M51,42 C55,40 55,45 50,45" fill="none" stroke="#eab308" stroke-width="1.8"/>
+                    </svg>
+                    <span class="ajuda-cost-tag">50<span class="mini-coin-dot"></span></span>
+                  </div>
+                  <span class="ajuda-item-label">Gênio</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- 3 BARRAS DE OURO: ERRAR | PARAR | ACERTAR (IDÊNTICO À FOTO) -->
+          <div class="gold-ingots-row">
+            <!-- ERRAR -->
+            <div class="ingot-stake-card">
+              <div class="ingot-svg-wrap">
+                <svg viewBox="0 0 120 56" xmlns="http://www.w3.org/2000/svg">
+                  <polygon points="22,8 106,8 116,42 8,42" fill="#ffd94a"/>
+                  <polygon points="22,8 106,8 98,22 18,22" fill="#fff099"/>
+                  <polygon points="8,42 116,42 112,50 12,50" fill="#b87d08"/>
+                  <polygon points="8,42 22,8 18,22 12,50" fill="#d49b15"/>
+                </svg>
+                <span class="ingot-amount-text" id="stakeErrarVal">0</span>
+              </div>
+              <span class="ingot-label-text">Errar</span>
+            </div>
+
+            <!-- PARAR -->
+            <div class="ingot-stake-card">
+              <div class="ingot-svg-wrap">
+                <svg viewBox="0 0 120 56" xmlns="http://www.w3.org/2000/svg">
+                  <polygon points="22,8 106,8 116,42 8,42" fill="#ffd94a"/>
+                  <polygon points="22,8 106,8 98,22 18,22" fill="#fff099"/>
+                  <polygon points="8,42 116,42 112,50 12,50" fill="#b87d08"/>
+                  <polygon points="8,42 22,8 18,22 12,50" fill="#d49b15"/>
+                </svg>
+                <span class="ingot-amount-text" id="stakePararVal">0</span>
+              </div>
+              <span class="ingot-label-text">Parar</span>
+            </div>
+
+            <!-- ACERTAR -->
+            <div class="ingot-stake-card">
+              <div class="ingot-svg-wrap">
+                <svg viewBox="0 0 120 56" xmlns="http://www.w3.org/2000/svg">
+                  <polygon points="22,8 106,8 116,42 8,42" fill="#ffd94a"/>
+                  <polygon points="22,8 106,8 98,22 18,22" fill="#fff099"/>
+                  <polygon points="8,42 116,42 112,50 12,50" fill="#b87d08"/>
+                  <polygon points="8,42 22,8 18,22 12,50" fill="#d49b15"/>
+                </svg>
+                <span class="ingot-amount-text" id="stakeAcertarVal">1 MIL</span>
+              </div>
+              <span class="ingot-label-text">Acertar</span>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <!-- =======================================================================
+         TELA 3: RESULTADO FINAL, MALETA E CERTIFICADO
+         ======================================================================= -->
+    <section id="endScreen" class="screen">
+      <div class="end-container">
+        <div class="classic-panel end-card">
+          <div class="leo-avatar-wrap large" id="leoEndAvatar"></div>
+
+          <h2 class="end-headline" id="endHeadline">Fim de Jogo!</h2>
+          <p class="end-prize-amount" id="endPrizeText">R$ 0</p>
+          <p id="endSummaryText" style="margin: 0; color: #e2e8f0; font-size: 0.98rem;">
+            Você acertou 0 de 16 perguntas.
+          </p>
+
+          <div class="briefcase-stage">
+            <div id="briefcaseContainer" class="briefcase-box"></div>
+            <div id="goldBarsCaption" class="gold-bars-caption"></div>
+          </div>
+
+          <p id="endHostQuote" style="margin: 0; font-style: italic; color: #ffe066; max-width: 560px; font-size: 0.96rem;">
+            "Foi uma ótima participação no Rumo ao Milhão!"
+          </p>
+
+          <div class="certificate-preview-wrap" id="certificateWrap">
+            <canvas id="certificateCanvas" width="1000" height="680"></canvas>
+          </div>
+
+          <div class="end-actions">
+            <button type="button" id="saveCertBtn" class="btn-gold" style="display: none;">
+              🏅 Salvar Certificado
+            </button>
+            <button type="button" id="playAgainBtn" class="btn-green-pill">
+              🔄 Jogar de Novo
+            </button>
+            <button type="button" id="backToLobbyBtn" class="btn-secondary">
+              🏠 Tela Inicial
+            </button>
+          </div>
+        </div>
+
+        <div class="classic-panel" style="width: 100%; padding: 16px;">
+          <h3 class="ranking-title">🏆 Ranking Local — Top 10</h3>
+          <ul id="endRankingList" class="ranking-list"></ul>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- =========================================================================
+       MODAL ÚNICO PARA AJUDAS, ESCADA DE PRÊMIOS E CONFIRMAÇÃO DE PARAR
+       ========================================================================= -->
+  <div id="helpModal" class="modal-backdrop" role="dialog" aria-modal="true">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 class="modal-title" id="modalTitle">Ajuda</h3>
+        <button type="button" id="closeModalBtn" class="icon-btn" aria-label="Fechar">✖</button>
+      </div>
+      <div id="modalBody"></div>
+    </div>
+  </div>
+
+  <script>
+    (() => {
+      'use strict';
+
+      /* =========================================================================
+         1. ESCADA DE PRÊMIOS (16 NÍVEIS) E FORMATAÇÃO COMPACTA PARA AS BARRAS DE OURO
+         ========================================================================= */
+      const PRIZE_LADDER = [
+        { q: 1,  prize: 1000,    level: 1, label: 'Fácil' },
+        { q: 2,  prize: 2000,    level: 1, label: 'Fácil' },
+        { q: 3,  prize: 3000,    level: 1, label: 'Fácil' },
+        { q: 4,  prize: 4000,    level: 1, label: 'Fácil' },
+        { q: 5,  prize: 5000,    level: 1, label: 'Fácil' },
+        { q: 6,  prize: 10000,   level: 2, label: 'Médio' },
+        { q: 7,  prize: 20000,   level: 2, label: 'Médio' },
+        { q: 8,  prize: 30000,   level: 2, label: 'Médio' },
+        { q: 9,  prize: 40000,   level: 2, label: 'Médio' },
+        { q: 10, prize: 50000,   level: 2, label: 'Médio' },
+        { q: 11, prize: 100000,  level: 3, label: 'Difícil' },
+        { q: 12, prize: 200000,  level: 3, label: 'Difícil' },
+        { q: 13, prize: 300000,  level: 3, label: 'Difícil' },
+        { q: 14, prize: 400000,  level: 3, label: 'Difícil' },
+        { q: 15, prize: 500000,  level: 3, label: 'Difícil' },
+        { q: 16, prize: 1000000, level: 4, label: 'Pergunta do Milhão' }
+      ];
+
+      function formatBRL(value) {
+        if (value === 1000000) return 'R$ 1 Milhão';
+        return 'R$ ' + value.toLocaleString('pt-BR');
+      }
+
+      // Formato compacto exibido nas 3 barras de ouro ("1 MIL", "2 MIL", "3 MIL", "1 MILHÃO")
+      function formatIngotPrize(value) {
+        if (value <= 0) return '0';
+        if (value === 1000000) return '1 MILHÃO';
+        if (value >= 1000) {
+          const thousands = value / 1000;
+          return Number.isInteger(thousands)
+            ? `${thousands} MIL`
+            : `${thousands.toLocaleString('pt-BR')} MIL`;
+        }
+        return String(value);
+      }
+
+      /* =========================================================================
+         2. BANCO DE DADOS DE GEOGRAFIA (240 PERGUNTAS VERIFICADAS + DICAS PARA O GURU)
+         ========================================================================= */
+      const QUESTION_BANK = [
+        // NÍVEL 1 — FÁCIL
+        { level: 1, type: 'flag', code: 'br', q: 'De qual país é esta bandeira?', options: ['Brasil', 'Argentina', 'Portugal', 'Colômbia'], answer: 0 },
+        { level: 1, type: 'flag', code: 'ar', q: 'De qual país é esta bandeira?', options: ['Uruguai', 'Argentina', 'Chile', 'Paraguai'], answer: 1 },
+        { level: 1, type: 'flag', code: 'us', q: 'De qual país é esta bandeira?', options: ['Reino Unido', 'Canadá', 'Estados Unidos', 'Austrália'], answer: 2 },
+        { level: 1, type: 'flag', code: 'jp', q: 'De qual país é esta bandeira?', options: ['China', 'Coreia do Sul', 'Tailândia', 'Japão'], answer: 3 },
+        { level: 1, type: 'flag', code: 'fr', q: 'De qual país é esta bandeira?', options: ['França', 'Itália', 'Alemanha', 'Espanha'], answer: 0 },
+        { level: 1, type: 'flag', code: 'it', q: 'De qual país é esta bandeira?', options: ['França', 'Itália', 'Irlanda', 'México'], answer: 1 },
+        { level: 1, type: 'flag', code: 'de', q: 'De qual país é esta bandeira?', options: ['Bélgica', 'Áustria', 'Alemanha', 'Holanda'], answer: 2 },
+        { level: 1, type: 'flag', code: 'es', q: 'De qual país é esta bandeira?', options: ['Portugal', 'Colômbia', 'Venezuela', 'Espanha'], answer: 3 },
+        { level: 1, type: 'flag', code: 'pt', q: 'De qual país é esta bandeira?', options: ['Portugal', 'Espanha', 'Brasil', 'Marrocos'], answer: 0 },
+        { level: 1, type: 'flag', code: 'ca', q: 'De qual país é esta bandeira?', options: ['Suíça', 'Canadá', 'Áustria', 'Dinamarca'], answer: 1 },
+        { level: 1, type: 'flag', code: 'gb', q: 'De qual país é esta bandeira?', options: ['Austrália', 'Nova Zelândia', 'Reino Unido', 'Estados Unidos'], answer: 2 },
+        { level: 1, type: 'flag', code: 'mx', q: 'De qual país é esta bandeira?', options: ['Itália', 'Bolívia', 'Peru', 'México'], answer: 3 },
+        { level: 1, type: 'flag', code: 'cn', q: 'De qual país é esta bandeira?', options: ['China', 'Vietnã', 'Japão', 'Turquia'], answer: 0 },
+        { level: 1, type: 'flag', code: 'kr', q: 'De qual país é esta bandeira?', options: ['Japão', 'Coreia do Sul', 'Taiwan', 'Filipinas'], answer: 1 },
+        { level: 1, type: 'flag', code: 'cl', q: 'De qual país é esta bandeira?', options: ['Cuba', 'Porto Rico', 'Chile', 'Panamá'], answer: 2 },
+        { level: 1, type: 'capital', q: 'Qual é a capital do Brasil?', options: ['Brasília', 'Rio de Janeiro', 'São Paulo', 'Salvador'], answer: 0 },
+        { level: 1, type: 'capital', q: 'Qual é a capital da França?', options: ['Lyon', 'Paris', 'Marselha', 'Nice'], answer: 1 },
+        { level: 1, type: 'capital', q: 'Qual é a capital da Argentina?', options: ['Córdoba', 'Rosário', 'Buenos Aires', 'Mendoza'], answer: 2 },
+        { level: 1, type: 'capital', q: 'Qual é a capital do Japão?', options: ['Osaka', 'Quioto', 'Hiroshima', 'Tóquio'], answer: 3 },
+        { level: 1, type: 'capital', q: 'Qual é a capital da Itália?', options: ['Roma', 'Milão', 'Veneza', 'Nápoles'], answer: 0 },
+        { level: 1, type: 'capital', q: 'Qual é a capital de Portugal?', options: ['Porto', 'Lisboa', 'Coimbra', 'Faro'], answer: 1 },
+        { level: 1, type: 'capital', q: 'Qual é a capital da Espanha?', options: ['Barcelona', 'Sevilha', 'Madri', 'Valência'], answer: 2 },
+        { level: 1, type: 'capital', q: 'Qual é a capital do Reino Unido?', options: ['Manchester', 'Liverpool', 'Edimburgo', 'Londres'], answer: 3 },
+        { level: 1, type: 'capital', q: 'Qual é a capital dos Estados Unidos?', options: ['Washington, D.C.', 'Nova York', 'Los Angeles', 'Chicago'], answer: 0 },
+        { level: 1, type: 'capital', q: 'Qual é a capital da Alemanha?', options: ['Munique', 'Berlim', 'Hamburgo', 'Frankfurt'], answer: 1 },
+        { level: 1, type: 'capital', q: 'Qual é a capital do Chile?', options: ['Valparaíso', 'Concepción', 'Santiago', 'Antofagasta'], answer: 2 },
+        { level: 1, type: 'capital', q: 'Qual é a capital do Uruguai?', options: ['Punta del Este', 'Salto', 'Colônia', 'Montevidéu'], answer: 3 },
+        { level: 1, type: 'country_of_capital', q: 'Paris é a capital de qual país?', options: ['França', 'Bélgica', 'Suíça', 'Itália'], answer: 0 },
+        { level: 1, type: 'country_of_capital', q: 'Roma é a capital de qual país?', options: ['Grécia', 'Itália', 'Espanha', 'Romênia'], answer: 1 },
+        { level: 1, type: 'country_of_capital', q: 'Tóquio é a capital de qual país?', options: ['China', 'Coreia do Sul', 'Japão', 'Tailândia'], answer: 2 },
+        { level: 1, type: 'country_of_capital', q: 'Lisboa é a capital de qual país?', options: ['Espanha', 'Brasil', 'Angola', 'Portugal'], answer: 3 },
+        { level: 1, type: 'country_of_capital', q: 'Buenos Aires é a capital de qual país?', options: ['Argentina', 'Uruguai', 'Chile', 'Paraguai'], answer: 0 },
+        { level: 1, type: 'country_of_capital', q: 'Lima é a capital de qual país?', options: ['Bolívia', 'Peru', 'Equador', 'Colômbia'], answer: 1 },
+        { level: 1, type: 'country_of_capital', q: 'Bogotá é a capital de qual país?', options: ['Venezuela', 'Panamá', 'Colômbia', 'Costa Rica'], answer: 2 },
+        { level: 1, type: 'country_of_capital', q: 'Cidade do México é a capital de qual país?', options: ['Guatemala', 'Cuba', 'Espanha', 'México'], answer: 3 },
+        { level: 1, type: 'continent', q: 'Em qual continente fica o Brasil?', options: ['América do Sul', 'América do Norte', 'Europa', 'África'], answer: 0 },
+        { level: 1, type: 'continent', q: 'Em qual continente fica o Egito?', options: ['Ásia', 'África', 'Europa', 'Oceania'], answer: 1 },
+        { level: 1, type: 'continent', q: 'Em qual continente fica a Austrália?', options: ['Ásia', 'América', 'Oceania', 'Europa'], answer: 2 },
+        { level: 1, type: 'continent', q: 'Em qual continente fica a Alemanha?', options: ['Ásia', 'América do Norte', 'África', 'Europa'], answer: 3 },
+        { level: 1, type: 'continent', q: 'Em qual continente fica a China?', options: ['Ásia', 'Europa', 'Oceania', 'África'], answer: 0 },
+        { level: 1, type: 'continent', q: 'Em qual continente fica o Canadá?', options: ['Europa', 'América do Norte', 'América do Sul', 'Ásia'], answer: 1 },
+        { level: 1, type: 'continent', q: 'Em qual continente fica a Nigéria?', options: ['Ásia', 'América do Sul', 'África', 'Oceania'], answer: 2 },
+        { level: 1, type: 'continent', q: 'Em qual continente fica a Itália?', options: ['África', 'Ásia', 'América do Norte', 'Europa'], answer: 3 },
+        { level: 1, type: 'brazil', q: 'Qual é a capital do estado de São Paulo?', options: ['São Paulo', 'Campinas', 'Santos', 'Ribeirão Preto'], answer: 0 },
+        { level: 1, type: 'brazil', q: 'Qual é a capital do estado do Rio de Janeiro?', options: ['Niterói', 'Rio de Janeiro', 'Petrópolis', 'Campos'], answer: 1 },
+        { level: 1, type: 'brazil', q: 'Qual é a capital da Bahia?', options: ['Ilhéus', 'Porto Seguro', 'Salvador', 'Feira de Santana'], answer: 2 },
+        { level: 1, type: 'brazil', q: 'Qual é a capital de Minas Gerais?', options: ['Uberlândia', 'Juiz de Fora', 'Ouro Preto', 'Belo Horizonte'], answer: 3 },
+        { level: 1, type: 'brazil', q: 'Qual é a sigla do estado do Paraná?', options: ['PR', 'PA', 'PB', 'PE'], answer: 0 },
+        { level: 1, type: 'brazil', q: 'Em qual região do Brasil fica o estado do Amazonas?', options: ['Nordeste', 'Norte', 'Centro-Oeste', 'Sudeste'], answer: 1 },
+        { level: 1, type: 'brazil', q: 'Em qual região do Brasil fica o estado do Rio Grande do Sul?', options: ['Sudeste', 'Centro-Oeste', 'Sul', 'Norte'], answer: 2 },
+        { level: 1, type: 'brazil', q: 'Qual é a capital do Ceará?', options: ['Recife', 'Natal', 'Maceió', 'Fortaleza'], answer: 3 },
+        { level: 1, type: 'brazil', q: 'Qual é a capital de Pernambuco?', options: ['Recife', 'João Pessoa', 'Aracaju', 'Teresina'], answer: 0 },
+        { level: 1, type: 'brazil', q: 'Qual oceano banha o litoral do Brasil?', options: ['Oceano Pacífico', 'Oceano Atlântico', 'Oceano Índico', 'Oceano Ártico'], answer: 1 },
+        { level: 1, type: 'landmark', q: 'Em qual país fica a Torre Eiffel?', options: ['França', 'Itália', 'Espanha', 'Inglaterra'], answer: 0 },
+        { level: 1, type: 'landmark', q: 'Em qual país fica o Cristo Redentor?', options: ['Portugal', 'Brasil', 'Argentina', 'México'], answer: 1 },
+        { level: 1, type: 'landmark', q: 'Em qual país fica o Coliseu?', options: ['Grécia', 'Turquia', 'Itália', 'França'], answer: 2 },
+        { level: 1, type: 'landmark', q: 'Em qual país ficam as Pirâmides de Gizé?', options: ['Marrocos', 'Iraque', 'Arábia Saudita', 'Egito'], answer: 3 },
+        { level: 1, type: 'landmark', q: 'Em qual país fica a Estátua da Liberdade?', options: ['Estados Unidos', 'Canadá', 'Reino Unido', 'Austrália'], answer: 0 },
+        { level: 1, type: 'compare', q: 'Qual destes países tem maior extensão territorial?', options: ['Portugal', 'Brasil', 'Uruguai', 'Suíça'], answer: 1 },
+        { level: 1, type: 'compare', q: 'Qual destes países tem maior população?', options: ['Vaticano', 'Mônaco', 'China', 'Islândia'], answer: 2 },
+        { level: 1, type: 'flag', code: 'bo', q: 'De qual país sul-americano é esta bandeira?', options: ['Bolívia', 'Peru', 'Equador', 'Colômbia'], answer: 0 },
+        { level: 1, type: 'flag', code: 'py', q: 'De qual país vizinho do Brasil é esta bandeira?', options: ['Uruguai', 'Paraguai', 'Argentina', 'Chile'], answer: 1 },
+        { level: 1, type: 'flag', code: 'ec', q: 'De qual país sul-americano é esta bandeira?', options: ['Colômbia', 'Venezuela', 'Equador', 'Bolívia'], answer: 2 },
+        { level: 1, type: 'flag', code: 've', q: 'De qual país sul-americano é esta bandeira?', options: ['Espanha', 'Colômbia', 'Equador', 'Venezuela'], answer: 3 },
+        { level: 1, type: 'flag', code: 'ru', q: 'De qual país transcontinental é esta bandeira?', options: ['Rússia', 'França', 'Países Baixos', 'Sérvia'], answer: 0 },
+        { level: 1, type: 'capital', q: 'Qual é a capital do Peru?', options: ['Cusco', 'Lima', 'Arequipa', 'Trujillo'], answer: 1 },
+        { level: 1, type: 'capital', q: 'Qual é a capital do México?', options: ['Guadalajara', 'Cancún', 'Cidade do México', 'Monterrey'], answer: 2 },
+        { level: 1, type: 'capital', q: 'Qual é a capital da China?', options: ['Xangai', 'Hong Kong', 'Cantão', 'Pequim'], answer: 3 },
+        { level: 1, type: 'capital', q: 'Qual é a capital da Irlanda?', options: ['Dublin', 'Edimburgo', 'Cardiff', 'Belfast'], answer: 0 },
+        { level: 1, type: 'capital', q: 'Qual é a capital de Cuba?', options: ['San Juan', 'Havana', 'Santo Domingo', 'Kingston'], answer: 1 },
+
+        // NÍVEL 2 — MÉDIO
+        { level: 2, type: 'flag', code: 'za', q: 'De qual país é esta bandeira?', options: ['África do Sul', 'Quênia', 'Nigéria', 'Gana'], answer: 0 },
+        { level: 2, type: 'flag', code: 'ch', q: 'De qual país é esta bandeira?', options: ['Dinamarca', 'Suíça', 'Áustria', 'Suécia'], answer: 1 },
+        { level: 2, type: 'flag', code: 'se', q: 'De qual país é esta bandeira?', options: ['Finlândia', 'Noruega', 'Suécia', 'Ucrânia'], answer: 2 },
+        { level: 2, type: 'flag', code: 'no', q: 'De qual país é esta bandeira?', options: ['Suécia', 'Dinamarca', 'Islândia', 'Noruega'], answer: 3 },
+        { level: 2, type: 'flag', code: 'gr', q: 'De qual país é esta bandeira?', options: ['Grécia', 'Uruguai', 'Finlândia', 'Israel'], answer: 0 },
+        { level: 2, type: 'flag', code: 'tr', q: 'De qual país é esta bandeira?', options: ['Tunísia', 'Turquia', 'Marrocos', 'Argélia'], answer: 1 },
+        { level: 2, type: 'flag', code: 'in', q: 'De qual país é esta bandeira?', options: ['Irlanda', 'Costa do Marfim', 'Índia', 'Paquistão'], answer: 2 },
+        { level: 2, type: 'flag', code: 'au', q: 'De qual país é esta bandeira?', options: ['Nova Zelândia', 'Reino Unido', 'Fiji', 'Austrália'], answer: 3 },
+        { level: 2, type: 'flag', code: 'co', q: 'De qual país é esta bandeira?', options: ['Colômbia', 'Equador', 'Venezuela', 'Bolívia'], answer: 0 },
+        { level: 2, type: 'flag', code: 'pe', q: 'De qual país é esta bandeira?', options: ['Canadá', 'Peru', 'Áustria', 'Polônia'], answer: 1 },
+        { level: 2, type: 'flag', code: 'uy', q: 'De qual país é esta bandeira?', options: ['Argentina', 'Grécia', 'Uruguai', 'Honduras'], answer: 2 },
+        { level: 2, type: 'flag', code: 'nl', q: 'De qual país é esta bandeira?', options: ['França', 'Rússia', 'Luxemburgo', 'Países Baixos (Holanda)'], answer: 3 },
+        { level: 2, type: 'flag', code: 'be', q: 'De qual país é esta bandeira?', options: ['Bélgica', 'Alemanha', 'Romênia', 'Chade'], answer: 0 },
+        { level: 2, type: 'flag', code: 'ie', q: 'De qual país é esta bandeira?', options: ['Itália', 'Irlanda', 'Índia', 'Hungria'], answer: 1 },
+        { level: 2, type: 'flag', code: 'il', q: 'De qual país é esta bandeira?', options: ['Grécia', 'Finlândia', 'Israel', 'Argentina'], answer: 2 },
+        { level: 2, type: 'capital', q: 'Qual é a capital do Canadá?', options: ['Ottawa', 'Toronto', 'Vancouver', 'Montreal'], answer: 0 },
+        { level: 2, type: 'capital', q: 'Qual é a capital da Austrália?', options: ['Sydney', 'Camberra', 'Melbourne', 'Perth'], answer: 1 },
+        { level: 2, type: 'capital', q: 'Qual é a capital da Suíça?', options: ['Zurique', 'Genebra', 'Berna', 'Basileia'], answer: 2 },
+        { level: 2, type: 'capital', q: 'Qual é a capital da Turquia?', options: ['Istambul', 'Esmirna', 'Antália', 'Ancara'], answer: 3 },
+        { level: 2, type: 'capital', q: 'Qual é a capital da Índia?', options: ['Nova Délhi', 'Mumbai', 'Calcutá', 'Bangalore'], answer: 0 },
+        { level: 2, type: 'capital', q: 'Qual é a capital da Rússia?', options: ['São Petersburgo', 'Moscou', 'Kazan', 'Sochi'], answer: 1 },
+        { level: 2, type: 'capital', q: 'Qual é a capital do Egito?', options: ['Alexandria', 'Luxor', 'Cairo', 'Gizé'], answer: 2 },
+        { level: 2, type: 'capital', q: 'Qual é a capital da Grécia?', options: ['Tessalônica', 'Esparta', 'Creta', 'Atenas'], answer: 3 },
+        { level: 2, type: 'capital', q: 'Qual é a capital da Coreia do Sul?', options: ['Seul', 'Busan', 'Incheon', 'Daegu'], answer: 0 },
+        { level: 2, type: 'capital', q: 'Qual é a capital da Colômbia?', options: ['Medellín', 'Bogotá', 'Cáli', 'Cartagena'], answer: 1 },
+        { level: 2, type: 'capital', q: 'Qual é a capital da Venezuela?', options: ['Maracaibo', 'Valência', 'Caracas', 'Mérida'], answer: 2 },
+        { level: 2, type: 'capital', q: 'Qual é a capital do Paraguai?', options: ['Ciudad del Este', 'Encarnación', 'Luque', 'Assunção'], answer: 3 },
+        { level: 2, type: 'country_of_capital', q: 'Bruxelas é a capital de qual país?', options: ['Bélgica', 'Países Baixos', 'Suíça', 'Áustria'], answer: 0 },
+        { level: 2, type: 'country_of_capital', q: 'Viena é a capital de qual país?', options: ['Alemanha', 'Áustria', 'Hungria', 'Polônia'], answer: 1 },
+        { level: 2, type: 'country_of_capital', q: 'Amsterdã é a capital de qual país?', options: ['Dinamarca', 'Bélgica', 'Países Baixos', 'Suécia'], answer: 2 },
+        { level: 2, type: 'country_of_capital', q: 'Estocolmo é a capital de qual país?', options: ['Noruega', 'Finlândia', 'Dinamarca', 'Suécia'], answer: 3 },
+        { level: 2, type: 'country_of_capital', q: 'Quito é a capital de qual país?', options: ['Equador', 'Bolívia', 'Peru', 'Colômbia'], answer: 0 },
+        { level: 2, type: 'country_of_capital', q: 'Havana é a capital de qual país?', options: ['Porto Rico', 'Cuba', 'República Dominicana', 'Jamaica'], answer: 1 },
+        { level: 2, type: 'country_of_capital', q: 'Seul é a capital de qual país?', options: ['Japão', 'China', 'Coreia do Sul', 'Vietnã'], answer: 2 },
+        { level: 2, type: 'country_of_capital', q: 'Oslo é a capital de qual país?', options: ['Suécia', 'Islândia', 'Finlândia', 'Noruega'], answer: 3 },
+        { level: 2, type: 'brazil', q: 'Qual é a capital de Santa Catarina?', options: ['Florianópolis', 'Joinville', 'Blumenau', 'Chapecó'], answer: 0 },
+        { level: 2, type: 'brazil', q: 'Qual é a capital do Pará?', options: ['Manaus', 'Belém', 'Santarém', 'Macapá'], answer: 1 },
+        { level: 2, type: 'brazil', q: 'Qual é a capital de Goiás?', options: ['Anápolis', 'Cuiabá', 'Goiânia', 'Campo Grande'], answer: 2 },
+        { level: 2, type: 'brazil', q: 'Qual é a capital do Mato Grosso do Sul?', options: ['Cuiabá', 'Dourados', 'Corumbá', 'Campo Grande'], answer: 3 },
+        { level: 2, type: 'brazil', q: 'Qual é a capital do Espírito Santo?', options: ['Vitória', 'Vila Velha', 'Serra', 'Guarapari'], answer: 0 },
+        { level: 2, type: 'brazil', q: 'Qual é o maior estado brasileiro em extensão territorial?', options: ['Pará', 'Mato Grosso', 'Amazonas', 'Minas Gerais'], answer: 2 },
+        { level: 2, type: 'brazil', q: 'Qual é o menor estado brasileiro em extensão territorial?', options: ['Alagoas', 'Espírito Santo', 'Rio de Janeiro', 'Sergipe'], answer: 3 },
+        { level: 2, type: 'landmark', q: 'Em qual país fica Machu Picchu?', options: ['Peru', 'Bolívia', 'Chile', 'Equador'], answer: 0 },
+        { level: 2, type: 'landmark', q: 'Em qual país fica o Taj Mahal?', options: ['Paquistão', 'Índia', 'Tailândia', 'Indonésia'], answer: 1 },
+        { level: 2, type: 'landmark', q: 'Em qual país fica a Ópera de Sydney?', options: ['Austrália', 'Nova Zelândia', 'Reino Unido', 'Canadá'], answer: 0 },
+
+        // NÍVEL 3 — DIFÍCIL
+        { level: 3, type: 'flag', code: 'np', q: 'De qual país é esta bandeira (única não retangular)?', options: ['Nepal', 'Butão', 'Sri Lanka', 'Bangladesh'], answer: 0 },
+        { level: 3, type: 'flag', code: 'fi', q: 'De qual país é esta bandeira?', options: ['Suécia', 'Finlândia', 'Estônia', 'Islândia'], answer: 1 },
+        { level: 3, type: 'flag', code: 'dk', q: 'De qual país é esta bandeira?', options: ['Suíça', 'Noruega', 'Dinamarca', 'Áustria'], answer: 2 },
+        { level: 3, type: 'flag', code: 'at', q: 'De qual país é esta bandeira?', options: ['Polônia', 'Letônia', 'Peru', 'Áustria'], answer: 3 },
+        { level: 3, type: 'flag', code: 'pl', q: 'De qual país é esta bandeira?', options: ['Polônia', 'Indonésia', 'Mônaco', 'Áustria'], answer: 0 },
+        { level: 3, type: 'flag', code: 'ua', q: 'De qual país é esta bandeira?', options: ['Suécia', 'Ucrânia', 'Cazaquistão', 'Romênia'], answer: 1 },
+        { level: 3, type: 'flag', code: 'vn', q: 'De qual país é esta bandeira?', options: ['China', 'Marrocos', 'Vietnã', 'Turquia'], answer: 2 },
+        { level: 3, type: 'flag', code: 'th', q: 'De qual país é esta bandeira?', options: ['Costa Rica', 'Camboja', 'Malásia', 'Tailândia'], answer: 3 },
+        { level: 3, type: 'flag', code: 'ke', q: 'De qual país é esta bandeira?', options: ['Quênia', 'África do Sul', 'Etiópia', 'Tanzânia'], answer: 0 },
+        { level: 3, type: 'flag', code: 'ng', q: 'De qual país é esta bandeira?', options: ['Gana', 'Nigéria', 'Costa do Marfim', 'Senegal'], answer: 1 },
+        { level: 3, type: 'flag', code: 'ma', q: 'De qual país é esta bandeira?', options: ['Turquia', 'Tunísia', 'Marrocos', 'Argélia'], answer: 2 },
+        { level: 3, type: 'flag', code: 'nz', q: 'De qual país é esta bandeira?', options: ['Austrália', 'Reino Unido', 'Fiji', 'Nova Zelândia'], answer: 3 },
+        { level: 3, type: 'flag', code: 'jm', q: 'De qual país é esta bandeira?', options: ['Jamaica', 'Bahamas', 'Barbados', 'Trinidad e Tobago'], answer: 0 },
+        { level: 3, type: 'flag', code: 'cu', q: 'De qual país é esta bandeira?', options: ['Chile', 'Cuba', 'Panamá', 'República Dominicana'], answer: 1 },
+        { level: 3, type: 'flag', code: 'sa', q: 'De qual país é esta bandeira?', options: ['Paquistão', 'Argélia', 'Arábia Saudita', 'Emirados Árabes Unidos'], answer: 2 },
+        { level: 3, type: 'capital', q: 'Qual é a capital da Nova Zelândia?', options: ['Wellington', 'Auckland', 'Christchurch', 'Queenstown'], answer: 0 },
+        { level: 3, type: 'capital', q: 'Qual é a capital da Polônia?', options: ['Cracóvia', 'Varsóvia', 'Gdansk', 'Poznan'], answer: 1 },
+        { level: 3, type: 'capital', q: 'Qual é a capital da Hungria?', options: ['Bucareste', 'Praga', 'Budapeste', 'Sófia'], answer: 2 },
+        { level: 3, type: 'capital', q: 'Qual é a capital da República Tcheca (Tchéquia)?', options: ['Bratislava', 'Varsóvia', 'Zagreb', 'Praga'], answer: 3 },
+        { level: 3, type: 'capital', q: 'Qual é a capital da Finlândia?', options: ['Helsinque', 'Oslo', 'Estocolmo', 'Reykjavik'], answer: 0 },
+        { level: 3, type: 'capital', q: 'Qual é a capital da Tailândia?', options: ['Hanói', 'Jacarta', 'Bangcoc', 'Manila'], answer: 2 },
+        { level: 3, type: 'capital', q: 'Qual é a capital da Indonésia?', options: ['Kuala Lumpur', 'Singapura', 'Bangcoc', 'Jacarta'], answer: 3 },
+        { level: 3, type: 'capital', q: 'Qual é a capital do Marrocos?', options: ['Casablanca', 'Rabat', 'Marrakesh', 'Fez'], answer: 1 },
+        { level: 3, type: 'capital', q: 'Qual é a capital da Nigéria?', options: ['Lagos', 'Acra', 'Abuja', 'Dacar'], answer: 2 },
+        { level: 3, type: 'capital', q: 'Qual é a capital do Quênia?', options: ['Mombaça', 'Kampala', 'Dar es Salaam', 'Nairóbi'], answer: 3 },
+        { level: 3, type: 'brazil', q: 'Qual é a capital de Rondônia?', options: ['Porto Velho', 'Rio Branco', 'Boa Vista', 'Macapá'], answer: 0 },
+        { level: 3, type: 'brazil', q: 'Qual é a capital do Acre?', options: ['Porto Velho', 'Rio Branco', 'Cruzeiro do Sul', 'Manaus'], answer: 1 },
+        { level: 3, type: 'brazil', q: 'Qual é a capital de Roraima?', options: ['Macapá', 'Palmas', 'Boa Vista', 'Belém'], answer: 2 },
+        { level: 3, type: 'brazil', q: 'Qual é a capital do Amapá?', options: ['Belém', 'São Luís', 'Boa Vista', 'Macapá'], answer: 3 },
+        { level: 3, type: 'brazil', q: 'Qual é o único bioma exclusivamente brasileiro?', options: ['Pantanal', 'Pampa', 'Caatinga', 'Cerrado'], answer: 2 },
+        { level: 3, type: 'landmark', q: 'Em qual país fica o templo Angkor Wat?', options: ['Camboja', 'Tailândia', 'Vietnã', 'Laos'], answer: 0 },
+        { level: 3, type: 'landmark', q: 'Em qual país fica a cidade antiga de Petra?', options: ['Egito', 'Jordânia', 'Líbano', 'Síria'], answer: 1 },
+        { level: 3, type: 'landmark', q: 'Em qual país ficam as estátuas Moai da Ilha de Páscoa?', options: ['Peru', 'Equador', 'Nova Zelândia', 'Chile'], answer: 3 },
+
+        // NÍVEL 4 — PERGUNTA DO MILHÃO
+        { level: 4, type: 'flag', code: 'bt', q: 'De qual país asiático é esta bandeira com um dragão branco?', options: ['Butão', 'Nepal', 'Mongólia', 'Laos'], answer: 0 },
+        { level: 4, type: 'flag', code: 'kz', q: 'De qual país da Ásia Central é esta bandeira azul-celeste e dourada?', options: ['Uzbequistão', 'Cazaquistão', 'Quirguistão', 'Turcomenistão'], answer: 1 },
+        { level: 4, type: 'flag', code: 'ee', q: 'De qual país báltico é esta bandeira tricolor azul, preta e branca?', options: ['Letônia', 'Lituânia', 'Estônia', 'Finlândia'], answer: 2 },
+        { level: 4, type: 'flag', code: 'lk', q: 'De qual país insular do Oceano Índico é esta bandeira?', options: ['Maldivas', 'Maurício', 'Madagascar', 'Sri Lanka'], answer: 3 },
+        { level: 4, type: 'flag', code: 'is', q: 'De qual país nórdico é esta bandeira?', options: ['Islândia', 'Noruega', 'Finlândia', 'Suécia'], answer: 0 },
+        { level: 4, type: 'flag', code: 'hr', q: 'De qual país europeu é esta bandeira?', options: ['Sérvia', 'Eslovênia', 'Croácia', 'Eslováquia'], answer: 2 },
+        { level: 4, type: 'flag', code: 'sg', q: 'De qual país do Sudeste Asiático é esta bandeira?', options: ['Indonésia', 'Malásia', 'Brunei', 'Singapura'], answer: 3 },
+        { level: 4, type: 'flag', code: 'cy', q: 'De qual país do Mediterrâneo é esta bandeira com o mapa da própria ilha?', options: ['Malta', 'Chipre', 'Grécia', 'Croácia'], answer: 1 },
+        { level: 4, type: 'capital', q: 'Qual é a capital do Cazaquistão?', options: ['Astana', 'Almaty', 'Tashkent', 'Bishkek'], answer: 0 },
+        { level: 4, type: 'capital', q: 'Qual é a capital da Islândia?', options: ['Oslo', 'Reykjavik', 'Helsinque', 'Tórshavn'], answer: 1 },
+        { level: 4, type: 'capital', q: 'Qual é a capital da Mongólia?', options: ['Astana', 'Katmandu', 'Ulan Bator', 'Thimphu'], answer: 2 },
+        { level: 4, type: 'capital', q: 'Qual é a capital da Eslovênia?', options: ['Bratislava', 'Zagreb', 'Belgrado', 'Liubliana'], answer: 3 },
+        { level: 4, type: 'capital', q: 'Qual é a capital da Estônia?', options: ['Riga', 'Tallinn', 'Vilnius', 'Minsk'], answer: 1 },
+        { level: 4, type: 'capital', q: 'Qual é a capital da Lituânia?', options: ['Riga', 'Tallinn', 'Varsóvia', 'Vilnius'], answer: 3 },
+        { level: 4, type: 'country_of_capital', q: 'Adis Abeba é a capital de qual país africano?', options: ['Etiópia', 'Quênia', 'Tanzânia', 'Uganda'], answer: 0 },
+        { level: 4, type: 'country_of_capital', q: 'Baku é a capital de qual país?', options: ['Geórgia', 'Armênia', 'Cazaquistão', 'Azerbaijão'], answer: 3 },
+        { level: 4, type: 'continent', q: 'Qual estreito separa a Europa da África entre Espanha e Marrocos?', options: ['Estreito de Gibraltar', 'Estreito de Bósforo', 'Estreito de Bering', 'Estreito de Ormuz'], answer: 0 },
+        { level: 4, type: 'continent', q: 'Qual estreito separa a Ásia (Rússia) da América do Norte (Alasca)?', options: ['Estreito de Malaca', 'Estreito de Bering', 'Estreito de Magalhães', 'Estreito de Davis'], answer: 1 },
+        { level: 4, type: 'brazil', q: 'Qual estado brasileiro faz fronteira com o maior número de outros estados (8 estados)?', options: ['Bahia', 'Minas Gerais', 'Goiás', 'Mato Grosso'], answer: 0 },
+        { level: 4, type: 'landmark', q: 'O Salar de Uyuni, maior planície de sal do mundo, fica em qual país?', options: ['Chile', 'Peru', 'Bolívia', 'Argentina'], answer: 2 },
+        { level: 4, type: 'continent', q: 'Qual é o menor país independente do mundo em área territorial?', options: ['Vaticano', 'Mônaco', 'Nauru', 'San Marino'], answer: 0 }
+      ];
+
+      /* =========================================================================
+         3. MOTOR DE ÁUDIO WEB AUDIO API — TRILHA SHOW DO MILHÃO (METALES + SUSPENSE)
+         ========================================================================= */
+      /* =========================================================================
+         3. MOTOR DE ÁUDIO SINCRONIZADO COM O VÍDEO OFICIAL DO YOUTUBE (X9ZnclOL78o)
+            + FALLBACK INSTANTÂNEO EM WEB AUDIO API
+         ========================================================================= */
+      const YT_VIDEO_ID = 'X9ZnclOL78o';
+
+      // Mapeamento exato dos momentos e timestamps do vídeo Show do Milhão | CD-ROM
+      const YT_CUE_MAP = {
+        // Vinhetas e trilhas principais
+        abertura_inicio:    { start: 0,   end: 5   },   // [00:00:00] Começo ("Vai começar o Show do Milhão")
+        trilha_abertura:    { start: 5,   end: 45  },   // [00:00:05] Trilha de abertura clássica
+        suspense_1:         { start: 130, end: 185 },   // [00:02:10] Trilha de suspense 1 (rodada inicial)
+        suspense_2:         { start: 215, end: 270 },   // [00:03:35] Trilha de suspense 2 (tensão intermediária)
+        suspense_3:         { start: 330, end: 400 },   // [00:05:30] Trilha de suspense 3 (perguntas altas / milhão)
+
+        // Anúncios de rodadas e valores das perguntas (1 a 16)
+        rodada_1:           { start: 622, end: 632 },   // [00:10:22] 1ª Rodada - 1 mil reais
+        rodada_2:           { start: 633, end: 646 },   // [00:10:33] 2ª Rodada - 10 mil reais
+        rodada_3:           { start: 647, end: 657 },   // [00:10:47] 3ª Rodada - 100 mil reais
+        val_1000:           { start: 658, end: 668 },   // [00:10:58] Pergunta valendo 1 mil
+        val_2000:           { start: 669, end: 678 },   // [00:11:09] Pergunta valendo 2 mil
+        val_3000:           { start: 679, end: 688 },   // [00:11:19] Pergunta valendo 3 mil
+        val_4000:           { start: 689, end: 697 },   // [00:11:29] Pergunta valendo 4 mil
+        val_5000:           { start: 698, end: 705 },   // [00:11:38] Pergunta valendo 5 mil
+        val_10000:          { start: 706, end: 714 },   // [00:11:46] Pergunta valendo 10 mil
+        val_20000:          { start: 715, end: 725 },   // [00:11:55] Pergunta valendo 20 mil
+        val_30000:          { start: 726, end: 734 },   // [00:12:06] Pergunta valendo 30 mil
+        val_40000:          { start: 735, end: 743 },   // [00:12:15] Pergunta valendo 40 mil
+        val_50000:          { start: 744, end: 752 },   // [00:12:24] Pergunta valendo 50 mil
+        val_100000:         { start: 753, end: 762 },   // [00:12:33] Pergunta valendo 100 mil
+        val_200000:         { start: 763, end: 772 },   // [00:12:43] Pergunta valendo 200 mil
+        val_300000:         { start: 773, end: 781 },   // [00:12:53] Pergunta valendo 300 mil
+        val_400000:         { start: 782, end: 791 },   // [00:13:02] Pergunta valendo 400 mil
+        val_500000:         { start: 792, end: 803 },   // [00:13:12] Pergunta valendo 500 mil
+        val_1000000:        { start: 804, end: 814 },   // [00:13:24] 1 Milhão de Reais - Arrisca Tudo
+
+        // Falas e efeitos de interação em cada momento
+        participante:       { start: 815, end: 824 },   // [00:13:35] Vamos conhecer agora o nosso participante / Boa sorte
+        tem_certeza:        { start: 824, end: 828.5 }, // [00:13:44] Você tem certeza?
+        ajuda_convidados:   { start: 832, end: 841 },   // [00:13:52] Vai pedir ajuda aos convidados
+        ajuda_placas:       { start: 842, end: 858 },   // [00:14:02] Opinião dos colegas / placas
+        ajuda_cartas:       { start: 859, end: 867 },   // [00:14:19] Tirando a carta / Tira um três pelo menos
+        esta_certo_disso:   { start: 868, end: 876 },   // [00:14:28] Está certo disso? Posso perguntar?
+        certa_resposta:     { start: 881, end: 884.5 }, // [00:14:41] Certa resposta!
+        que_pena_errou:     { start: 885, end: 889.5 }, // [00:14:45] Que pena... você errou!
+        tempo_acabou:       { start: 890, end: 896 },   // [00:14:50] Seu tempo acabou
+        entregar_ouro:      { start: 897, end: 901.5 }, // [00:14:57] Posso entregar o ouro?
+        ganhou_milhao:      { start: 911, end: 916.5 }, // [00:15:11] Ganhou 1 milhão!
+        moedas_caindo:      { start: 917, end: 922 },   // [00:15:17] Efeito de moedas caindo
+        tchau_pessoal:      { start: 1004, end: 1009 }  // [00:16:44] Tchau pessoal!
+      };
+
+      class StudioAudioEngine {
+        constructor() {
+          this.ctx = null;
+          this.masterGain = null;
+          this.bgmGain = null;
+          this.sfxGain = null;
+          this.isMuted = false;
+          this.volume = 0.78;
+          this.bgmInterval = null;
+          this.bgmStep = 0;
+          this.bgmIntensity = 1;
+          this.suspenseOsc = null;
+          this.suspenseSubOsc = null;
+          this.isPlaying = false;
+
+          // YouTube IFrame Player API
+          this.ytPlayer = null;
+          this.ytReady = false;
+          this.ytMonitorTimer = null;
+          this.activeCueEnd = null;
+          this.activeLoopCue = null;
+          this.onCueEndedCallback = null;
+          this._initYouTubeAPI();
+        }
+
+        _initYouTubeAPI() {
+          window.onYouTubeIframeAPIReady = () => {
+            if (!window.YT || !window.YT.Player) return;
+            this.ytPlayer = new window.YT.Player('ytPlayerFrame', {
+              height: '80',
+              width: '120',
+              videoId: YT_VIDEO_ID,
+              playerVars: {
+                autoplay: 0,
+                controls: 0,
+                disablekb: 1,
+                fs: 0,
+                iv_load_policy: 3,
+                modestbranding: 1,
+                playsinline: 1,
+                rel: 0,
+                origin: window.location.origin || undefined
+              },
+              events: {
+                onReady: () => {
+                  this.ytReady = true;
+                  this.ytPlayer.setVolume(Math.round(this.volume * 100));
+                  if (this.isMuted) this.ytPlayer.mute();
+                },
+                onError: () => {
+                  this.ytReady = false;
+                }
+              }
+            });
+          };
+
+          if (!document.getElementById('yt-iframe-api-script')) {
+            const tag = document.createElement('script');
+            tag.id = 'yt-iframe-api-script';
+            tag.src = 'https://www.youtube.com/iframe_api';
+            document.head.appendChild(tag);
+          }
+        }
+
+        playYouTubeCue(cueKey, { loop = false, onEnd = null } = {}) {
+          const cue = YT_CUE_MAP[cueKey];
+          if (!cue || !this.ytReady || !this.ytPlayer || this.isMuted) {
+            if (onEnd) setTimeout(onEnd, 350);
+            return false;
+          }
+          try {
+            if (this.ytMonitorTimer) {
+              clearInterval(this.ytMonitorTimer);
+              this.ytMonitorTimer = null;
+            }
+            this.activeCueEnd = cue.end;
+            this.activeLoopCue = loop ? cue : null;
+            this.onCueEndedCallback = onEnd;
+
+            this.ytPlayer.unMute();
+            this.ytPlayer.setVolume(Math.round(this.volume * 100));
+            this.ytPlayer.seekTo(cue.start, true);
+            this.ytPlayer.playVideo();
+
+            this.ytMonitorTimer = setInterval(() => {
+              if (!this.ytReady || !this.ytPlayer || typeof this.ytPlayer.getCurrentTime !== 'function') return;
+              const cur = this.ytPlayer.getCurrentTime();
+              if (this.activeCueEnd !== null && cur >= this.activeCueEnd) {
+                if (this.activeLoopCue && this.isPlaying && !this.isMuted) {
+                  this.ytPlayer.seekTo(this.activeLoopCue.start, true);
+                  this.ytPlayer.playVideo();
+                } else {
+                  clearInterval(this.ytMonitorTimer);
+                  this.ytMonitorTimer = null;
+                  this.activeCueEnd = null;
+                  const cb = this.onCueEndedCallback;
+                  this.onCueEndedCallback = null;
+                  if (cb) {
+                    cb();
+                  } else if (this.isPlaying) {
+                    this.resumeSuspenseLoop();
+                  } else {
+                    this.ytPlayer.pauseVideo();
+                  }
+                }
+              }
+            }, 120);
+            return true;
+          } catch (e) {
+            if (onEnd) setTimeout(onEnd, 350);
+            return false;
+          }
+        }
+
+        resumeSuspenseLoop() {
+          if (!this.isPlaying || this.isMuted) return;
+          const cueKey = this.bgmIntensity >= 3 ? 'suspense_3' : this.bgmIntensity === 2 ? 'suspense_2' : 'suspense_1';
+          if (this.ytReady && this.ytPlayer) {
+            this.stopSynthBgm();
+            this.playYouTubeCue(cueKey, { loop: true });
+          } else {
+            this.startSynthBgm();
+          }
+        }
+
+        unlock() {
+          try {
+            if (!this.ctx) {
+              const AudioCtx = window.AudioContext || window.webkitAudioContext;
+              if (!AudioCtx) return;
+              this.ctx = new AudioCtx();
+              this.masterGain = this.ctx.createGain();
+              this.bgmGain = this.ctx.createGain();
+              this.sfxGain = this.ctx.createGain();
+              this.bgmGain.gain.value = 0.55;
+              this.sfxGain.gain.value = 0.80;
+              this.masterGain.gain.value = this.isMuted ? 0 : this.volume;
+              this.bgmGain.connect(this.masterGain);
+              this.sfxGain.connect(this.masterGain);
+              this.masterGain.connect(this.ctx.destination);
+            }
+            if (this.ctx.state === 'suspended') {
+              this.ctx.resume();
+            }
+          } catch (e) {}
+        }
+
+        setVolume(val0to100) {
+          this.volume = Math.max(0, Math.min(1, val0to100 / 100));
+          if (this.masterGain && this.ctx) {
+            this.masterGain.gain.setTargetAtTime(this.isMuted ? 0 : this.volume, this.ctx.currentTime, 0.04);
+          }
+          if (this.ytReady && this.ytPlayer) {
+            try { this.ytPlayer.setVolume(Math.round(this.volume * 100)); } catch (e) {}
+          }
+        }
+
+        toggleMute() {
+          this.isMuted = !this.isMuted;
+          if (this.masterGain && this.ctx) {
+            this.masterGain.gain.setTargetAtTime(this.isMuted ? 0 : this.volume, this.ctx.currentTime, 0.04);
+          }
+          if (this.ytReady && this.ytPlayer) {
+            try {
+              if (this.isMuted) {
+                this.ytPlayer.mute();
+                this.ytPlayer.pauseVideo();
+              } else {
+                this.ytPlayer.unMute();
+                if (this.isPlaying) this.resumeSuspenseLoop();
+              }
+            } catch (e) {}
+          }
+          return this.isMuted;
+        }
+
+        setIntensity(level) {
+          this.bgmIntensity = Math.max(1, Math.min(4, level || 1));
+        }
+
+        // Anuncia o valor exato da pergunta usando o áudio original do Silvio Santos no vídeo
+        playQuestionValueCue(questionNumber, onDone = null) {
+          const mapByQuestion = {
+            1: 'val_1000',
+            2: 'val_2000',
+            3: 'val_3000',
+            4: 'val_4000',
+            5: 'val_5000',
+            6: 'val_10000',
+            7: 'val_20000',
+            8: 'val_30000',
+            9: 'val_40000',
+            10: 'val_50000',
+            11: 'val_100000',
+            12: 'val_200000',
+            13: 'val_300000',
+            14: 'val_400000',
+            15: 'val_500000',
+            16: 'val_1000000'
+          };
+          const cueKey = mapByQuestion[questionNumber] || 'val_1000';
+          const started = this.playYouTubeCue(cueKey, {
+            loop: false,
+            onEnd: () => {
+              this.resumeSuspenseLoop();
+              if (onDone) onDone();
+            }
+          });
+          if (!started && onDone) {
+            setTimeout(onDone, 250);
+          }
+        }
+
+        // Fanfarra / Trilha de abertura ao entrar no palco [00:00:00 -> 00:00:05] + Pergunta 1 mil [00:10:58]
+        playIntroFanfare(onIntroDone = null) {
+          this.unlock();
+          if (this.ytReady && this.ytPlayer && !this.isMuted) {
+            this.playYouTubeCue('abertura_inicio', {
+              loop: false,
+              onEnd: () => {
+                this.playYouTubeCue('val_1000', {
+                  loop: false,
+                  onEnd: () => {
+                    this.resumeSuspenseLoop();
+                    if (onIntroDone) onIntroDone();
+                  }
+                });
+              }
+            });
+            return;
+          }
+
+          if (!this.ctx || this.isMuted) {
+            if (onIntroDone) onIntroDone();
+            return;
+          }
+          const now = this.ctx.currentTime + 0.02;
+          const notes = [
+            { f: 220.00, t: 0.00, d: 0.18 },
+            { f: 261.63, t: 0.18, d: 0.18 },
+            { f: 329.63, t: 0.36, d: 0.18 },
+            { f: 440.00, t: 0.54, d: 0.38 },
+            { f: 392.00, t: 0.96, d: 0.20 },
+            { f: 440.00, t: 1.18, d: 0.55 }
+          ];
+          notes.forEach(n => {
+            this._playBrassNote(n.f, now + n.t, n.d, 0.28);
+            this._playBrassNote(n.f * 0.5, now + n.t, n.d, 0.22);
+          });
+          if (onIntroDone) setTimeout(onIntroDone, 900);
+        }
+
+        startBgm() {
+          this.unlock();
+          this.isPlaying = true;
+          if (this.ytReady && this.ytPlayer && !this.isMuted) {
+            this.stopSynthBgm();
+            if (this.activeCueEnd === null) {
+              this.resumeSuspenseLoop();
+            }
+          } else {
+            this.startSynthBgm();
+          }
+        }
+
+        startSynthBgm() {
+          if (!this.ctx || this.bgmInterval) return;
+          const bassOstinato = [
+            110.00, 110.00, 130.81, 110.00,
+            146.83, 146.83, 130.81, 123.47,
+            87.31,  87.31,  110.00, 130.81,
+            82.41,  98.00,  103.83, 123.47
+          ];
+          const brassTheme = [
+            440.00, 0,      329.63, 440.00,
+            523.25, 0,      493.88, 440.00,
+            349.23, 0,      440.00, 523.25,
+            493.88, 415.30, 329.63, 0
+          ];
+          this.bgmStep = 0;
+          const tickBgm = () => {
+            if (!this.ctx || !this.isPlaying || (this.ytReady && !this.isMuted)) return;
+            if (this.ctx.state === 'suspended') this.ctx.resume().catch(() => {});
+            if (this.isMuted || this.ctx.state !== 'running') return;
+            const now = this.ctx.currentTime;
+            const step = this.bgmStep % bassOstinato.length;
+            this.bgmStep++;
+            if (step % 4 === 0) {
+              this._playHeartbeat(now, 0.34 + this.bgmIntensity * 0.06);
+              this._playTimpaniHit(bassOstinato[step], now, 0.36);
+            }
+            const bassOsc = this.ctx.createOscillator();
+            const bassGain = this.ctx.createGain();
+            bassOsc.type = 'sawtooth';
+            bassOsc.frequency.setValueAtTime(bassOstinato[step], now);
+            bassGain.gain.setValueAtTime(0.001, now);
+            bassGain.gain.linearRampToValueAtTime(0.18, now + 0.02);
+            bassGain.gain.exponentialRampToValueAtTime(0.001, now + 0.30);
+            bassOsc.connect(bassGain);
+            bassGain.connect(this.bgmGain);
+            bassOsc.start(now);
+            bassOsc.stop(now + 0.32);
+
+            const leadFreq = brassTheme[step];
+            if (leadFreq > 0) this._playBrassNote(leadFreq, now, 0.28, 0.14);
+          };
+          tickBgm();
+          this.bgmInterval = setInterval(tickBgm, 340);
+        }
+
+        stopSynthBgm() {
+          if (this.bgmInterval) {
+            clearInterval(this.bgmInterval);
+            this.bgmInterval = null;
+          }
+        }
+
+        stopBgm() {
+          this.isPlaying = false;
+          this.activeLoopCue = null;
+          this.activeCueEnd = null;
+          this.stopSynthBgm();
+          if (this.ytMonitorTimer) {
+            clearInterval(this.ytMonitorTimer);
+            this.ytMonitorTimer = null;
+          }
+          if (this.ytReady && this.ytPlayer) {
+            try { this.ytPlayer.pauseVideo(); } catch (e) {}
+          }
+        }
+
+        // Momento: Jogador clica na alternativa ("Você tem certeza?") [00:13:44]
+        playConfirmPromptSting() {
+          this.unlock();
+          if (this.playYouTubeCue('tem_certeza', { loop: false })) return;
+          if (!this.ctx || this.isMuted) return;
+          const now = this.ctx.currentTime;
+          this._playHeartbeat(now, 0.42);
+        }
+
+        // Momento: Confirmação final ("Está certo disso? Posso perguntar?") [00:14:28]
+        startSuspense(durationSec = 2.6) {
+          this.unlock();
+          this.stopSuspense();
+          if (this.playYouTubeCue('esta_certo_disso', { loop: false })) return;
+          if (!this.ctx || this.isMuted) return;
+          const now = this.ctx.currentTime;
+          const subOsc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          subOsc.type = 'sine';
+          subOsc.frequency.setValueAtTime(55, now);
+          subOsc.frequency.exponentialRampToValueAtTime(146.83, now + durationSec);
+          gain.gain.setValueAtTime(0.04, now);
+          gain.gain.linearRampToValueAtTime(0.28, now + durationSec);
+          subOsc.connect(gain);
+          gain.connect(this.sfxGain);
+          subOsc.start(now);
+          this.suspenseSubOsc = subOsc;
+        }
+
+        stopSuspense() {
+          if (this.suspenseOsc) { try { this.suspenseOsc.stop(); } catch (e) {} this.suspenseOsc = null; }
+          if (this.suspenseSubOsc) { try { this.suspenseSubOsc.stop(); } catch (e) {} this.suspenseSubOsc = null; }
+        }
+
+        // Momento: Resposta Certa ("Certa resposta!" [00:14:41] + Moedas caindo [00:15:17] ou "Ganhou 1 milhão" [00:15:11])
+        playCorrect(isMillion = false) {
+          this.unlock();
+          this.stopSuspense();
+          if (isMillion) {
+            if (this.playYouTubeCue('ganhou_milhao', {
+              loop: false,
+              onEnd: () => this.playYouTubeCue('trilha_abertura', { loop: false })
+            })) return;
+          } else {
+            if (this.playYouTubeCue('certa_resposta', {
+              loop: false,
+              onEnd: () => this.playYouTubeCue('moedas_caindo', { loop: false })
+            })) return;
+          }
+
+          if (!this.ctx || this.isMuted) return;
+          const now = this.ctx.currentTime;
+          const notes = isMillion
+            ? [523.25, 659.25, 783.99, 1046.5, 783.99, 1046.5]
+            : [523.25, 659.25, 783.99, 1046.5];
+          notes.forEach((freq, idx) => {
+            const t = now + idx * 0.11;
+            const osc = this.ctx.createOscillator();
+            const gain = this.ctx.createGain();
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(freq, t);
+            gain.gain.setValueAtTime(0.001, t);
+            gain.gain.linearRampToValueAtTime(0.35, t + 0.03);
+            gain.gain.exponentialRampToValueAtTime(0.001, t + 0.42);
+            osc.connect(gain);
+            gain.connect(this.sfxGain);
+            osc.start(t);
+            osc.stop(t + 0.45);
+          });
+        }
+
+        // Momento: Resposta Errada ("Que pena... você errou!") [00:14:45]
+        playWrong() {
+          this.unlock();
+          this.stopSuspense();
+          if (this.playYouTubeCue('que_pena_errou', { loop: false })) return;
+          if (!this.ctx || this.isMuted) return;
+          const now = this.ctx.currentTime;
+          [293.66, 261.63, 220.0, 174.61].forEach((freq, idx) => {
+            const t = now + idx * 0.16;
+            const osc = this.ctx.createOscillator();
+            const gain = this.ctx.createGain();
+            osc.type = 'sawtooth';
+            osc.frequency.setValueAtTime(freq, t);
+            gain.gain.setValueAtTime(0.24, t);
+            gain.gain.exponentialRampToValueAtTime(0.001, t + 0.35);
+            osc.connect(gain);
+            gain.connect(this.sfxGain);
+            osc.start(t);
+            osc.stop(t + 0.38);
+          });
+        }
+
+        // Momento: Tempo esgotado ("Seu tempo acabou") [00:14:50]
+        playTimeUp() {
+          this.unlock();
+          this.stopSuspense();
+          if (this.playYouTubeCue('tempo_acabou', { loop: false })) return;
+          this.playWrong();
+        }
+
+        // Momento: Pedir ajudas específicas (Cartas [00:14:19], Placas [00:14:02], Convidados [00:13:52])
+        playHelpCue(type) {
+          this.unlock();
+          const map = {
+            cards: 'ajuda_cartas',
+            audience: 'ajuda_placas',
+            students: 'ajuda_convidados'
+          };
+          if (map[type] && this.playYouTubeCue(map[type], { loop: false })) return;
+          this.playClick();
+        }
+
+        // Momento: Encerramento / Parar ("Posso entregar o ouro?" [00:14:57] / "Tchau pessoal!" [00:16:44])
+        playStopOrEndCue(hasPrize) {
+          this.unlock();
+          this.playYouTubeCue(hasPrize ? 'entregar_ouro' : 'tchau_pessoal', { loop: false });
+        }
+
+        _playBrassNote(freq, time, duration, gainLevel = 0.24) {
+          if (!this.ctx || this.isMuted || !freq) return;
+          const osc1 = this.ctx.createOscillator();
+          const filter = this.ctx.createBiquadFilter();
+          const gain = this.ctx.createGain();
+          osc1.type = 'sawtooth';
+          osc1.frequency.setValueAtTime(freq, time);
+          filter.type = 'lowpass';
+          filter.frequency.setValueAtTime(1600, time);
+          gain.gain.setValueAtTime(0.001, time);
+          gain.gain.linearRampToValueAtTime(gainLevel, time + 0.025);
+          gain.gain.exponentialRampToValueAtTime(0.001, time + duration);
+          osc1.connect(filter);
+          filter.connect(gain);
+          gain.connect(this.bgmGain);
+          osc1.start(time);
+          osc1.stop(time + duration + 0.02);
+        }
+
+        _playTimpaniHit(freq, time, strength = 0.42) {
+          if (!this.ctx || this.isMuted) return;
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(freq * 1.45, time);
+          osc.frequency.exponentialRampToValueAtTime(freq * 0.72, time + 0.34);
+          gain.gain.setValueAtTime(0.001, time);
+          gain.gain.linearRampToValueAtTime(strength, time + 0.015);
+          gain.gain.exponentialRampToValueAtTime(0.001, time + 0.36);
+          osc.connect(gain);
+          gain.connect(this.bgmGain);
+          osc.start(time);
+          osc.stop(time + 0.38);
+        }
+
+        _playHeartbeat(time, strength = 0.45) {
+          if (!this.ctx || this.isMuted) return;
+          [0, 0.15].forEach((offset, idx) => {
+            const t = time + offset;
+            const osc = this.ctx.createOscillator();
+            const gain = this.ctx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(idx === 0 ? 92 : 74, t);
+            osc.frequency.exponentialRampToValueAtTime(38, t + 0.13);
+            gain.gain.setValueAtTime(0.001, t);
+            gain.gain.linearRampToValueAtTime(idx === 0 ? strength : strength * 0.78, t + 0.015);
+            gain.gain.exponentialRampToValueAtTime(0.001, t + 0.14);
+            osc.connect(gain);
+            gain.connect(this.bgmGain);
+            osc.start(t);
+            osc.stop(t + 0.15);
+          });
+        }
+
+        playClick() {
+          this.unlock();
+          if (!this.ctx || this.isMuted) return;
+          const now = this.ctx.currentTime;
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(520, now);
+          osc.frequency.exponentialRampToValueAtTime(780, now + 0.07);
+          gain.gain.setValueAtTime(0.22, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
+          osc.connect(gain);
+          gain.connect(this.sfxGain);
+          osc.start(now);
+          osc.stop(now + 0.09);
+        }
+
+        playMagicChime() {
+          this.unlock();
+          if (!this.ctx || this.isMuted) return;
+          const now = this.ctx.currentTime;
+          [587.33, 739.99, 880, 1174.66, 1479.98].forEach((freq, i) => {
+            const t = now + i * 0.07;
+            const osc = this.ctx.createOscillator();
+            const gain = this.ctx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(freq, t);
+            gain.gain.setValueAtTime(0.001, t);
+            gain.gain.linearRampToValueAtTime(0.25, t + 0.02);
+            gain.gain.exponentialRampToValueAtTime(0.001, t + 0.35);
+            osc.connect(gain);
+            gain.connect(this.sfxGain);
+            osc.start(t);
+            osc.stop(t + 0.36);
+          });
+        }
+
+        playTick(urgent = false) {
+          this.unlock();
+          if (!this.ctx || this.isMuted) return;
+          const now = this.ctx.currentTime;
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = urgent ? 'square' : 'sine';
+          osc.frequency.setValueAtTime(urgent ? 980 : 720, now);
+          gain.gain.setValueAtTime(urgent ? 0.14 : 0.06, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.05);
+          osc.connect(gain);
+          gain.connect(this.sfxGain);
+          osc.start(now);
+          osc.stop(now + 0.06);
+        }
+
+        playCardFlip() {
+          this.unlock();
+          if (!this.ctx || this.isMuted) return;
+          const now = this.ctx.currentTime;
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(320, now);
+          osc.frequency.exponentialRampToValueAtTime(920, now + 0.16);
+          gain.gain.setValueAtTime(0.28, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.18);
+          osc.connect(gain);
+          gain.connect(this.sfxGain);
+          osc.start(now);
+          osc.stop(now + 0.19);
+        }
+
+        playApplause(durationSec = 1.6) {
+          this.unlock();
+          if (!this.ctx || this.isMuted) return;
+          const now = this.ctx.currentTime;
+          const bufferSize = Math.floor(this.ctx.sampleRate * durationSec);
+          const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+          const data = buffer.getChannelData(0);
+          for (let i = 0; i < bufferSize; i++) {
+            const env = Math.sin((i / bufferSize) * Math.PI);
+            data[i] = (Math.random() * 2 - 1) * env;
+          }
+          const noise = this.ctx.createBufferSource();
+          noise.buffer = buffer;
+          const bandpass = this.ctx.createBiquadFilter();
+          bandpass.type = 'bandpass';
+          bandpass.frequency.value = 1100;
+          bandpass.Q.value = 0.7;
+          const gain = this.ctx.createGain();
+          gain.gain.setValueAtTime(0.30, now);
+          gain.gain.exponentialRampToValueAtTime(0.01, now + durationSec);
+          noise.connect(bandpass);
+          bandpass.connect(gain);
+          gain.connect(this.sfxGain);
+          noise.start(now);
+        }
+      }
+
+      /* =========================================================================
+         4. MOTOR DE VOZ (WEB SPEECH API EM PT-BR)
+         ========================================================================= */
+      class HostVoiceEngine {
+        constructor() {
+          this.enabled = true;
+          this.selectedVoice = null;
+          this.lastSpokenText = '';
+          this.speakQueueTimer = null;
+          this.lipSyncTimer = null;
+          this.onMouthMove = null;
+          this.supported = 'speechSynthesis' in window;
+          if (this.supported) {
+            this.loadVoices();
+            window.speechSynthesis.onvoiceschanged = () => this.loadVoices();
+          }
+        }
+
+        loadVoices() {
+          if (!this.supported) return;
+          const voices = window.speechSynthesis.getVoices() || [];
+          const ptVoices = voices.filter(v =>
+            v.lang && (v.lang.toLowerCase().includes('pt-br') || v.lang.toLowerCase().startsWith('pt'))
+          );
+          if (ptVoices.length > 0) {
+            const maleBr = ptVoices.find(v =>
+              /daniel|antonio|antônio|fabio|fábio|humberto|julio|júlio|ricardo|felipe|tiago|rodrigo|male|homem/i.test(v.name) &&
+              v.lang.toLowerCase().includes('pt-br')
+            );
+            const naturalBr = ptVoices.find(v =>
+              /google|microsoft|natural|neural/i.test(v.name) &&
+              v.lang.toLowerCase().includes('pt-br')
+            );
+            this.selectedVoice = maleBr || naturalBr || ptVoices.find(v => v.lang.toLowerCase().includes('pt-br')) || ptVoices[0];
+          }
+        }
+
+        unlock() {
+          if (!this.supported) return;
+          try {
+            this.loadVoices();
+            const emptyUtter = new SpeechSynthesisUtterance('');
+            emptyUtter.volume = 0;
+            window.speechSynthesis.speak(emptyUtter);
+          } catch (e) {}
+        }
+
+        stop() {
+          if (this.speakQueueTimer) { clearTimeout(this.speakQueueTimer); this.speakQueueTimer = null; }
+          this._stopLipSync();
+          if (!this.supported) return;
+          try { window.speechSynthesis.cancel(); } catch (e) {}
+        }
+
+        _startLipSync(sentence) {
+          this._stopLipSync();
+          const syllables = sentence.split(/[\s,.;:!?-]+/).filter(Boolean);
+          let step = 0;
+          this.lipSyncTimer = setInterval(() => {
+            if (!this.onMouthMove) return;
+            const word = syllables[step % Math.max(1, syllables.length)] || 'a';
+            const hasOpenVowel = /[aáàãâeéêoóô]/i.test(word);
+            const openness = (step % 2 === 0)
+              ? (hasOpenVowel ? 0.65 + Math.random() * 0.35 : 0.35 + Math.random() * 0.3)
+              : 0.12 + Math.random() * 0.2;
+            this.onMouthMove(openness);
+            step++;
+          }, 85);
+        }
+
+        _stopLipSync() {
+          if (this.lipSyncTimer) { clearInterval(this.lipSyncTimer); this.lipSyncTimer = null; }
+          if (this.onMouthMove) this.onMouthMove(0);
+        }
+
+        _splitIntoExpressiveChunks(text) {
+          return text
+            .replace(/([.!?])\s+/g, '$1|')
+            .split('|')
+            .map(s => s.trim())
+            .filter(Boolean);
+        }
+
+        speak(text, onStateChange = null) {
+          this.lastSpokenText = text;
+          if (!this.enabled || !this.supported || !text) {
+            this._stopLipSync();
+            if (onStateChange) onStateChange(false);
+            return;
+          }
+          try {
+            this.stop();
+            const chunks = this._splitIntoExpressiveChunks(text);
+            if (chunks.length === 0) return;
+
+            let idx = 0;
+            const speakNextChunk = () => {
+              if (!this.enabled || idx >= chunks.length) {
+                this._stopLipSync();
+                if (onStateChange) onStateChange(false);
+                return;
+              }
+
+              const sentence = chunks[idx];
+              const isQuestion = sentence.endsWith('?');
+              const utter = new SpeechSynthesisUtterance(sentence);
+              utter.lang = 'pt-BR';
+              if (this.selectedVoice) utter.voice = this.selectedVoice;
+              utter.rate = 1.38;
+              utter.pitch = 0.92;
+
+              utter.onstart = () => {
+                this._startLipSync(sentence);
+                if (onStateChange) onStateChange(true);
+              };
+              utter.onend = () => {
+                this._stopLipSync();
+                idx++;
+                if (idx < chunks.length && this.enabled) {
+                  this.speakQueueTimer = setTimeout(speakNextChunk, isQuestion ? 60 : 20);
+                } else {
+                  if (onStateChange) onStateChange(false);
+                }
+              };
+              utter.onerror = () => {
+                this._stopLipSync();
+                if (onStateChange) onStateChange(false);
+              };
+
+              window.speechSynthesis.speak(utter);
+            };
+
+            speakNextChunk();
+          } catch (e) {
+            this._stopLipSync();
+            if (onStateChange) onStateChange(false);
+          }
+        }
+
+        repeat(onStateChange = null) {
+          if (this.lastSpokenText) this.speak(this.lastSpokenText, onStateChange);
+        }
+      }
+
+      /* =========================================================================
+         5. ILUSTRAÇÕES SVG (PROFESSOR LEO & MALETA COM BARRAS DE OURO)
+         ========================================================================= */
+      let leoSvgCounter = 0;
+      function getProfessorLeoSVG() {
+        const uid = ++leoSvgCounter;
+        return `
+          <svg class="leo-svg" viewBox="0 0 100 116" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <radialGradient id="leoFaceGrad_${uid}" cx="46%" cy="38%" r="58%">
+                <stop offset="0%" stop-color="#ffe2c8"/>
+                <stop offset="62%" stop-color="#eab68d"/>
+                <stop offset="100%" stop-color="#c6895e"/>
+              </radialGradient>
+              <linearGradient id="leoSuitGrad_${uid}" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#1e3a8a"/>
+                <stop offset="50%" stop-color="#0f255e"/>
+                <stop offset="100%" stop-color="#071336"/>
+              </linearGradient>
+              <linearGradient id="leoHairGrad_${uid}" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#f8fafc"/>
+                <stop offset="60%" stop-color="#cbd5e1"/>
+                <stop offset="100%" stop-color="#64748b"/>
+              </linearGradient>
+              <linearGradient id="leoTieGrad_${uid}" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#fde047"/>
+                <stop offset="55%" stop-color="#eab308"/>
+                <stop offset="100%" stop-color="#a16207"/>
+              </linearGradient>
+            </defs>
+            <g class="leo-torso">
+              <path d="M12,116 C14,88 28,80 50,80 C72,80 86,88 88,116 Z" fill="url(#leoSuitGrad_${uid})" stroke="#040b22" stroke-width="1.5"/>
+              <polygon points="40,80 60,80 50,104" fill="#f8fafc"/>
+              <polygon points="36,80 43,80 48,104 38,96" fill="#0b1c4a"/>
+              <polygon points="64,80 57,80 52,104 62,96" fill="#0b1c4a"/>
+              <polygon points="47,86 53,86 55,103 50,111 45,103" fill="url(#leoTieGrad_${uid})"/>
+            </g>
+            <g class="leo-arm-left">
+              <path d="M22,90 Q10,98 16,114" stroke="url(#leoSuitGrad_${uid})" stroke-width="11" stroke-linecap="round" fill="none"/>
+              <circle cx="17" cy="111" r="4.5" fill="#eab68d"/>
+            </g>
+            <rect x="42" y="65" width="16" height="17" rx="6" fill="#dca47a"/>
+            <g class="leo-head">
+              <ellipse cx="27.5" cy="48" rx="4.2" ry="6.5" fill="#dfa57b"/>
+              <ellipse cx="72.5" cy="48" rx="4.2" ry="6.5" fill="#dfa57b"/>
+              <path d="M29,34 C29,18 71,18 71,34 L70,54 C69,66 59,73 50,73 C41,73 31,66 30,54 Z" fill="url(#leoFaceGrad_${uid})"/>
+              <path d="M27,44 C25,18 39,10 54,12 C69,13 76,23 73,44 C71,32 65,24 55,23 C45,22 33,27 27,44 Z" fill="url(#leoHairGrad_${uid})"/>
+              <g class="leo-brows">
+                <path d="M34,37 Q40,34.5 46,37" fill="none" stroke="#475569" stroke-width="2.4" stroke-linecap="round"/>
+                <path d="M54,37 Q60,34.5 66,37" fill="none" stroke="#475569" stroke-width="2.4" stroke-linecap="round"/>
+              </g>
+              <ellipse cx="40.5" cy="44.5" rx="4.2" ry="2.9" fill="#ffffff"/>
+              <circle cx="40.5" cy="44.5" r="2.2" fill="#451a03"/>
+              <circle cx="40.5" cy="44.5" r="1.1" fill="#090d16"/>
+              <ellipse cx="59.5" cy="44.5" rx="4.2" ry="2.9" fill="#ffffff"/>
+              <circle cx="59.5" cy="44.5" r="2.2" fill="#451a03"/>
+              <circle cx="59.5" cy="44.5" r="1.1" fill="#090d16"/>
+              <g class="leo-eyelids">
+                <ellipse cx="40.5" cy="44.5" rx="4.5" ry="3.2" fill="#dfa57b"/>
+                <ellipse cx="59.5" cy="44.5" rx="4.5" ry="3.2" fill="#dfa57b"/>
+              </g>
+              <rect x="33.5" y="40" width="14" height="9.5" rx="3" fill="rgba(255,255,255,0.08)" stroke="#f5b82e" stroke-width="1.4"/>
+              <rect x="52.5" y="40" width="14" height="9.5" rx="3" fill="rgba(255,255,255,0.08)" stroke="#f5b82e" stroke-width="1.4"/>
+              <line x1="47.5" y1="44" x2="52.5" y2="44" stroke="#f5b82e" stroke-width="1.5"/>
+              <path d="M50,43 L48.5,52.5 Q50,54 52.5,52.5" fill="none" stroke="#b27349" stroke-width="1.6" stroke-linecap="round"/>
+              <g class="leo-mouth-group">
+                <ellipse class="leo-mouth-cavity" cx="50" cy="60.5" rx="6.2" ry="1.2" fill="#5c1916"/>
+                <rect class="leo-teeth" x="45.2" y="58.6" width="9.6" height="1.6" rx="0.6" fill="#ffffff"/>
+                <ellipse class="leo-tongue" cx="50" cy="61.8" rx="3.8" ry="0.8" fill="#e11d48"/>
+                <path class="leo-upper-lip" d="M42.5,59.2 Q47,57.6 50,58.6 Q53,57.6 57.5,59.2" fill="none" stroke="#9a4e3a" stroke-width="1.6" stroke-linecap="round"/>
+                <path class="leo-lower-lip" d="M43.2,60.2 Q50,62.8 56.8,60.2" fill="none" stroke="#a8553f" stroke-width="1.8" stroke-linecap="round"/>
+              </g>
+            </g>
+            <g class="leo-mic-arm">
+              <path d="M78,92 Q86,98 76,112" stroke="url(#leoSuitGrad_${uid})" stroke-width="10" stroke-linecap="round" fill="none"/>
+              <circle cx="73" cy="96" r="4.5" fill="#eab68d"/>
+              <line x1="74" y1="98" x2="67" y2="75" stroke="#1e293b" stroke-width="3.6" stroke-linecap="round"/>
+              <circle cx="65.8" cy="71.5" r="5.2" fill="#cbd5e1" stroke="#475569" stroke-width="1.4"/>
+            </g>
+          </svg>
+        `;
+      }
+
+      function renderBriefcaseSVG(prize) {
+        let width = 150;
+        let barsCount = 0;
+        if (prize >= 1000000) { width = 230; barsCount = 12; }
+        else if (prize >= 100000) { width = 200; barsCount = 8; }
+        else if (prize >= 10000) { width = 180; barsCount = 5; }
+        else if (prize > 0) { width = 160; barsCount = 2; }
+
+        let barsSVG = '';
+        for (let i = 0; i < barsCount; i++) {
+          const col = i % 4;
+          const row = Math.floor(i / 4);
+          const x = 44 + col * 30 + (row % 2) * 4;
+          const y = 78 - row * 11;
+          barsSVG += `<polygon points="${x},${y} ${x+24},${y} ${x+28},${y+8} ${x-4},${y+8}" fill="url(#goldBarGrad)" stroke="#92400e" stroke-width="1"/>`;
+        }
+        const emptyNote = barsCount === 0
+          ? `<text x="100" y="76" text-anchor="middle" fill="#94a3b8" font-size="11" font-weight="bold">VAZIA</text>`
+          : '';
+
+        return `
+          <svg width="${width}" viewBox="0 0 200 120" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="silverCase" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#f1f5f9"/>
+                <stop offset="50%" stop-color="#94a3b8"/>
+                <stop offset="100%" stop-color="#475569"/>
+              </linearGradient>
+              <linearGradient id="goldBarGrad" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#fff3b0"/>
+                <stop offset="50%" stop-color="#f5b82e"/>
+                <stop offset="100%" stop-color="#b45309"/>
+              </linearGradient>
+            </defs>
+            <rect x="26" y="46" width="148" height="58" rx="8" fill="#0f172a" stroke="#cbd5e1" stroke-width="3"/>
+            ${barsSVG}
+            ${emptyNote}
+            <rect x="22" y="84" width="156" height="24" rx="6" fill="url(#silverCase)" stroke="#334155" stroke-width="2"/>
+            <g class="briefcase-lid">
+              <path d="M80,26 L80,18 Q80,12 88,12 L112,12 Q120,12 120,18 L120,26" fill="none" stroke="#cbd5e1" stroke-width="5"/>
+              <rect x="22" y="26" width="156" height="34" rx="8" fill="url(#silverCase)" stroke="#334155" stroke-width="2"/>
+              <rect x="52" y="48" width="14" height="10" rx="2" fill="#f5b82e" stroke="#78350f"/>
+              <rect x="134" y="48" width="14" height="10" rx="2" fill="#f5b82e" stroke="#78350f"/>
+            </g>
+          </svg>
+        `;
+      }
+
+      /* =========================================================================
+         6. ESTADO DO JOGO & CONTROLADOR PRINCIPAL
+         ========================================================================= */
+      const RANKING_STORAGE_KEY = 'rumo_ao_milhao_ranking_v1';
+      const USED_HISTORY_STORAGE_KEY = 'rumo_ao_milhao_used_history_v1';
+      const COINS_STORAGE_KEY = 'rumo_ao_milhao_coins_v1';
+
+      const audio = new StudioAudioEngine();
+      const voice = new HostVoiceEngine();
+
+      function loadPersistentUsedQuestions() {
+        try {
+          const raw = localStorage.getItem(USED_HISTORY_STORAGE_KEY);
+          const arr = raw ? JSON.parse(raw) : [];
+          return new Set(Array.isArray(arr) ? arr : []);
+        } catch (e) { return new Set(); }
+      }
+
+      function savePersistentUsedQuestions(setObj) {
+        try { localStorage.setItem(USED_HISTORY_STORAGE_KEY, JSON.stringify(Array.from(setObj))); } catch (e) {}
+      }
+
+      function loadSavedCoins() {
+        try {
+          const val = parseInt(localStorage.getItem(COINS_STORAGE_KEY), 10);
+          return Number.isFinite(val) && val >= 0 ? val : 100;
+        } catch (e) { return 100; }
+      }
+
+      function saveCoins(val) {
+        try { localStorage.setItem(COINS_STORAGE_KEY, String(Math.max(0, val))); } catch (e) {}
+      }
+
+      const state = {
+        playerName: 'Participante',
+        qIndex: 0,
+        accumulatedPrize: 0,
+        coins: loadSavedCoins(),
+        usedQuestionIndices: new Set(),
+        persistentUsedIndices: loadPersistentUsedQuestions(),
+        currentQuestion: null,
+        selectedOption: null,
+        eliminatedOptions: new Set(),
+        isLocked: false,
+        skipsLeft: 3,
+        usedCards: false,
+        usedAudience: false,
+        usedStudents: false,
+        usedGuruThisQ: false,
+        usedGenieThisQ: false,
+        timeLeft: 30,
+        timerInterval: null
+      };
+
+      const el = {
+        tvStage: document.getElementById('tvStage'),
+        startScreen: document.getElementById('startScreen'),
+        gameScreen: document.getElementById('gameScreen'),
+        endScreen: document.getElementById('endScreen'),
+        playerNameInput: document.getElementById('playerNameInput'),
+        startGameBtn: document.getElementById('startGameBtn'),
+        lobbyVoiceBtn: document.getElementById('lobbyVoiceBtn'),
+        lobbyVolumeSlider: document.getElementById('lobbyVolumeSlider'),
+        lobbyRankingList: document.getElementById('lobbyRankingList'),
+        endRankingList: document.getElementById('endRankingList'),
+        questionCounterPill: document.getElementById('questionCounterPill'),
+        timerPill: document.getElementById('timerPill'),
+        timerRingProgress: document.getElementById('timerRingProgress'),
+        timerText: document.getElementById('timerText'),
+        repeatSpeechBtn: document.getElementById('repeatSpeechBtn'),
+        toggleVoiceBtn: document.getElementById('toggleVoiceBtn'),
+        toggleMuteAudioBtn: document.getElementById('toggleMuteAudioBtn'),
+        openLadderNotesBtn: document.getElementById('openLadderNotesBtn'),
+        leoLobbyAvatar: document.getElementById('leoLobbyAvatar'),
+        leoGameAvatar: document.getElementById('leoGameAvatar'),
+        leoEndAvatar: document.getElementById('leoEndAvatar'),
+        hostSpeechText: document.getElementById('hostSpeechText'),
+        flagShowcase: document.getElementById('flagShowcase'),
+        flagImage: document.getElementById('flagImage'),
+        questionText: document.getElementById('questionText'),
+        optionRows: Array.from(document.querySelectorAll('.option-row')),
+        optionBtns: Array.from(document.querySelectorAll('.option-btn')),
+        confirmBar: document.getElementById('confirmBar'),
+        confirmPromptText: document.getElementById('confirmPromptText'),
+        confirmYesBtn: document.getElementById('confirmYesBtn'),
+        confirmNoBtn: document.getElementById('confirmNoBtn'),
+        coinsCountText: document.getElementById('coinsCountText'),
+        coinsInfoBtn: document.getElementById('coinsInfoBtn'),
+        stakeErrarVal: document.getElementById('stakeErrarVal'),
+        stakePararVal: document.getElementById('stakePararVal'),
+        stakeAcertarVal: document.getElementById('stakeAcertarVal'),
+        helpCardsBtn: document.getElementById('helpCardsBtn'),
+        helpAudienceBtn: document.getElementById('helpAudienceBtn'),
+        helpStudentsBtn: document.getElementById('helpStudentsBtn'),
+        helpSkipBtn: document.getElementById('helpSkipBtn'),
+        skipCountSvgText: document.getElementById('skipCountSvgText'),
+        helpGuruBtn: document.getElementById('helpGuruBtn'),
+        helpGenieBtn: document.getElementById('helpGenieBtn'),
+        stopGameBtn: document.getElementById('stopGameBtn'),
+        helpModal: document.getElementById('helpModal'),
+        modalTitle: document.getElementById('modalTitle'),
+        modalBody: document.getElementById('modalBody'),
+        closeModalBtn: document.getElementById('closeModalBtn'),
+        endHeadline: document.getElementById('endHeadline'),
+        endPrizeText: document.getElementById('endPrizeText'),
+        endSummaryText: document.getElementById('endSummaryText'),
+        briefcaseContainer: document.getElementById('briefcaseContainer'),
+        goldBarsCaption: document.getElementById('goldBarsCaption'),
+        endHostQuote: document.getElementById('endHostQuote'),
+        certificateWrap: document.getElementById('certificateWrap'),
+        certificateCanvas: document.getElementById('certificateCanvas'),
+        saveCertBtn: document.getElementById('saveCertBtn'),
+        playAgainBtn: document.getElementById('playAgainBtn'),
+        backToLobbyBtn: document.getElementById('backToLobbyBtn'),
+        confettiCanvas: document.getElementById('confettiCanvas'),
+        toastMsg: document.getElementById('toastMsg')
+      };
+
+      el.leoLobbyAvatar.innerHTML = getProfessorLeoSVG();
+      el.leoGameAvatar.innerHTML = getProfessorLeoSVG();
+      el.leoEndAvatar.innerHTML = getProfessorLeoSVG();
+
+      function updateLeoMouth(openness) {
+        const clamped = Math.max(0, Math.min(1, openness));
+        document.querySelectorAll('.leo-svg').forEach(svg => {
+          const cavity = svg.querySelector('.leo-mouth-cavity');
+          const lowerLip = svg.querySelector('.leo-lower-lip');
+          const tongue = svg.querySelector('.leo-tongue');
+          if (!cavity || !lowerLip) return;
+          cavity.setAttribute('ry', (1.1 + clamped * 4.4).toFixed(2));
+          cavity.setAttribute('cy', (60.2 + clamped * 1.4).toFixed(2));
+          lowerLip.setAttribute('transform', `translate(0, ${(clamped * 3.8).toFixed(2)})`);
+          if (tongue) {
+            tongue.setAttribute('cy', (61.2 + clamped * 2.1).toFixed(2));
+            tongue.setAttribute('ry', (0.6 + clamped * 1.5).toFixed(2));
+          }
+        });
+      }
+
+      voice.onMouthMove = updateLeoMouth;
+      updateLeoMouth(0);
+
+      function showToast(msg) {
+        el.toastMsg.textContent = msg;
+        el.toastMsg.classList.add('show');
+        clearTimeout(showToast._timer);
+        showToast._timer = setTimeout(() => el.toastMsg.classList.remove('show'), 2800);
+      }
+
+      function setLeoMood(mood) {
+        [el.leoGameAvatar, el.leoEndAvatar].forEach(box => {
+          if (!box) return;
+          box.classList.remove('leo-speaking', 'leo-celebrate', 'leo-suspense');
+          if (mood) box.classList.add('leo-' + mood);
+        });
+      }
+
+      function hostSay(text, moodAfter = null, onComplete = null) {
+        el.hostSpeechText.textContent = text;
+        voice.speak(text, (isSpeaking) => {
+          if (isSpeaking) {
+            setLeoMood('speaking');
+          } else {
+            setLeoMood(moodAfter);
+            if (onComplete) {
+              const cb = onComplete;
+              onComplete = null;
+              cb();
+            }
+          }
+        });
+      }
+
+      function switchScreen(screenEl) {
+        [el.startScreen, el.gameScreen, el.endScreen].forEach(s => s.classList.remove('active'));
+        screenEl.classList.add('active');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+
+      function updateCoinsUI() {
+        el.coinsCountText.textContent = String(state.coins);
+        saveCoins(state.coins);
+      }
+
+      /* =========================================================================
+         6.5. RELÓGIO / CRONÔMETRO DE 30 SEGUNDOS
+         ========================================================================= */
+      const QUESTION_TIME_LIMIT = 30;
+      const TIMER_CIRCUMFERENCE = 2 * Math.PI * 10;
+
+      function updateTimerUI() {
+        const secs = Math.max(0, Math.ceil(state.timeLeft));
+        el.timerText.textContent = `${secs}s`;
+        const fraction = Math.max(0, Math.min(1, state.timeLeft / QUESTION_TIME_LIMIT));
+        el.timerRingProgress.style.strokeDashoffset = (TIMER_CIRCUMFERENCE * (1 - fraction)).toFixed(2);
+        el.timerPill.classList.toggle('warning', secs <= 10 && secs > 0);
+      }
+
+      function stopQuestionTimer() {
+        if (state.timerInterval) {
+          clearInterval(state.timerInterval);
+          state.timerInterval = null;
+        }
+        el.timerPill.classList.remove('warning');
+      }
+
+      function startQuestionTimer(reset = true) {
+        stopQuestionTimer();
+        if (reset) state.timeLeft = QUESTION_TIME_LIMIT;
+        updateTimerUI();
+
+        state.timerInterval = setInterval(() => {
+          if (
+            state.isLocked ||
+            el.confirmBar.classList.contains('visible') ||
+            el.helpModal.classList.contains('open')
+          ) {
+            return;
+          }
+
+          state.timeLeft -= 1;
+          updateTimerUI();
+
+          if (state.timeLeft <= 10 && state.timeLeft > 0) {
+            audio.playTick(state.timeLeft <= 5);
+          }
+
+          if (state.timeLeft <= 0) {
+            handleTimeExpired();
+          }
+        }, 1000);
+      }
+
+      function handleTimeExpired() {
+        stopQuestionTimer();
+        if (state.isLocked) return;
+        state.isLocked = true;
+        el.confirmBar.classList.remove('visible');
+        updateLifelinesUI();
+
+        const correctIdx = state.currentQuestion.correctIndex;
+        el.optionBtns.forEach(b => (b.disabled = true));
+        el.optionRows[correctIdx].classList.add('correct');
+        audio.playTimeUp();
+
+        const isMillion = PRIZE_LADDER[state.qIndex].q === 16;
+        state.accumulatedPrize = isMillion ? 0 : Math.floor(state.accumulatedPrize / 2);
+
+        const correctLetter = ['A', 'B', 'C', 'D'][correctIdx];
+        hostSay(`O tempo acabou! A resposta correta era a letra ${correctLetter}.`);
+        setTimeout(() => finishGame('timeout'), 2400);
+      }
+
+      /* =========================================================================
+         7. RANKING LOCAL & ESCADA DE PRÊMIOS
+         ========================================================================= */
+      function getRanking() {
+        try {
+          const raw = localStorage.getItem(RANKING_STORAGE_KEY);
+          const parsed = raw ? JSON.parse(raw) : [];
+          return Array.isArray(parsed) ? parsed : [];
+        } catch (e) { return []; }
+      }
+
+      function saveRankingEntry(name, prize, correctCount) {
+        if (prize <= 0) return;
+        const list = getRanking();
+        const dateStr = new Date().toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: '2-digit' });
+        list.push({ name, prize, correctCount, date: dateStr, ts: Date.now() });
+        list.sort((a, b) => b.prize - a.prize || b.correctCount - a.correctCount || b.ts - a.ts);
+        try { localStorage.setItem(RANKING_STORAGE_KEY, JSON.stringify(list.slice(0, 10))); } catch (e) {}
+      }
+
+      function escapeHtml(str) {
+        return String(str).replace(/[&<>"']/g, m => ({
+          '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+        }[m]));
+      }
+
+      function renderRankingLists() {
+        const list = getRanking();
+        const html = list.length === 0
+          ? `<li class="ranking-item"><span style="color:#cbd5e1;">Nenhum recorde registrado ainda. Seja o primeiro milionário!</span></li>`
+          : list.map((item, idx) => `
+              <li class="ranking-item ${idx === 0 ? 'top-1' : ''}">
+                <span class="rank-pos">#${idx + 1}</span>
+                <span class="rank-name">${escapeHtml(item.name)}</span>
+                <span class="rank-date">${escapeHtml(item.date)}</span>
+                <span class="rank-prize">${formatBRL(item.prize)}</span>
+              </li>
+            `).join('');
+        el.lobbyRankingList.innerHTML = html;
+        el.endRankingList.innerHTML = html;
+      }
+
+      function buildLadderHTML() {
+        return PRIZE_LADDER.map((step, idx) => {
+          let cls = 'ladder-step';
+          if (idx === state.qIndex) cls += ' current';
+          else if (idx < state.qIndex) cls += ' passed';
+          if (step.q === 5 || step.q === 10 || step.q === 15) cls += ' milestone';
+          return `
+            <li class="${cls}">
+              <span>${step.q === 16 ? '👑 16' : step.q}</span>
+              <span>${formatBRL(step.prize)}</span>
+            </li>
+          `;
+        }).join('');
+      }
+
+      /* =========================================================================
+         8. SELEÇÃO DE PERGUNTAS & BANDEIRAS
+         ========================================================================= */
+      function getQuestionSubDifficulty(item) {
+        if (item.type === 'compare') return 1;
+        if (item.type === 'continent' || item.type === 'landmark') return 2;
+        if (item.type === 'brazil') return 3;
+        if (item.type === 'capital' || item.type === 'country_of_capital') return 4;
+        return 5;
+      }
+
+      function pickQuestionForLevel(level) {
+        const stepInLevel = state.qIndex % 5;
+        const allLevelItems = QUESTION_BANK
+          .map((item, idx) => ({ item, idx, subDiff: getQuestionSubDifficulty(item) }))
+          .filter(x => x.item.level === level);
+
+        let freshAcrossGames = allLevelItems.filter(
+          x => !state.usedQuestionIndices.has(x.idx) && !state.persistentUsedIndices.has(x.idx)
+        );
+
+        if (freshAcrossGames.length < 4) {
+          allLevelItems.forEach(x => state.persistentUsedIndices.delete(x.idx));
+          savePersistentUsedQuestions(state.persistentUsedIndices);
+          freshAcrossGames = allLevelItems.filter(x => !state.usedQuestionIndices.has(x.idx));
+        }
+
+        const pool = freshAcrossGames.length > 0 ? freshAcrossGames : allLevelItems;
+        const sortedPool = [...pool].sort((a, b) => a.subDiff - b.subDiff);
+        let tieredPool = sortedPool;
+        if (sortedPool.length >= 6 && level < 4) {
+          const sliceSize = Math.max(4, Math.ceil(sortedPool.length * 0.45));
+          const maxStart = Math.max(0, sortedPool.length - sliceSize);
+          const startIdx = Math.round((stepInLevel / 4) * maxStart);
+          tieredPool = sortedPool.slice(startIdx, startIdx + sliceSize);
+        }
+
+        const chosen = tieredPool[Math.floor(Math.random() * tieredPool.length)];
+        state.usedQuestionIndices.add(chosen.idx);
+        state.persistentUsedIndices.add(chosen.idx);
+        savePersistentUsedQuestions(state.persistentUsedIndices);
+
+        const indexedOpts = chosen.item.options.map((text, i) => ({
+          text,
+          isCorrect: i === chosen.item.answer
+        }));
+        for (let i = indexedOpts.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [indexedOpts[i], indexedOpts[j]] = [indexedOpts[j], indexedOpts[i]];
+        }
+
+        return {
+          ...chosen.item,
+          shuffledOptions: indexedOpts.map(o => o.text),
+          correctIndex: indexedOpts.findIndex(o => o.isCorrect)
+        };
+      }
+
+      function preloadFlagImage(code) {
+        return new Promise((resolve) => {
+          const url = `https://flagcdn.com/w320/${code.toLowerCase()}.png`;
+          const img = new Image();
+          img.onload = () => resolve({ ok: true, url });
+          img.onerror = () => resolve({ ok: false, url });
+          img.src = url;
+        });
+      }
+
+      async function loadCurrentQuestion(introPrefix = '') {
+        const step = PRIZE_LADDER[state.qIndex];
+        const isMillion = step.q === 16;
+
+        stopQuestionTimer();
+        audio.setIntensity(step.level);
+        if (step.q > 1) audio.playQuestionValueCue(step.q);
+        state.isLocked = true;
+        state.selectedOption = null;
+        state.eliminatedOptions.clear();
+        state.usedGuruThisQ = false;
+        state.usedGenieThisQ = false;
+        el.confirmBar.classList.remove('visible');
+
+        const qObj = pickQuestionForLevel(step.level);
+        state.currentQuestion = qObj;
+
+        el.questionCounterPill.textContent = isMillion
+          ? '👑 PERGUNTA DO MILHÃO'
+          : `Pergunta ${step.q} / 16`;
+
+        // Atualiza os 3 lingotes de ouro (Errar | Parar | Acertar)
+        const errarVal = isMillion ? 0 : Math.floor(state.accumulatedPrize / 2);
+        el.stakeErrarVal.textContent = formatIngotPrize(errarVal);
+        el.stakePararVal.textContent = formatIngotPrize(state.accumulatedPrize);
+        el.stakeAcertarVal.textContent = formatIngotPrize(step.prize);
+
+        if (qObj.type === 'flag' && qObj.code) {
+          const res = await preloadFlagImage(qObj.code);
+          el.flagImage.src = res.ok
+            ? res.url
+            : `https://placehold.co/320x213/0f2159/ffe680?text=Bandeira+(${qObj.code.toUpperCase()})`;
+          el.flagShowcase.classList.add('visible');
+        } else {
+          el.flagShowcase.classList.remove('visible');
+          el.flagImage.src = '';
+        }
+
+        el.questionText.textContent = qObj.q;
+
+        el.optionRows.forEach((row, idx) => {
+          row.className = 'option-row';
+          const btn = el.optionBtns[idx];
+          btn.disabled = false;
+          document.getElementById(`optText${idx}`).textContent = qObj.shuffledOptions[idx];
+        });
+
+        state.isLocked = false;
+        document.addEventListener('pointerdown', () => {
+        audio.unlock();
+        if (el.gameScreen.classList.contains('active') && !audio.bgmInterval && !audio.isMuted) {
+          audio.startBgm();
+        }
+      }, { passive: true });
+
+      updateCoinsUI();
+        updateLifelinesUI();
+
+        stopQuestionTimer();
+        state.timeLeft = QUESTION_TIME_LIMIT;
+        updateTimerUI();
+        const questionAtLoad = state.currentQuestion;
+
+        const spokenFull = `${introPrefix}${qObj.q} ` +
+          `A: ${qObj.shuffledOptions[0]}. ` +
+          `B: ${qObj.shuffledOptions[1]}. ` +
+          `C: ${qObj.shuffledOptions[2]}. ` +
+          `D: ${qObj.shuffledOptions[3]}.`;
+
+        hostSay(spokenFull, null, () => {
+          if (state.currentQuestion === questionAtLoad && !state.isLocked && !state.timerInterval) {
+            startQuestionTimer(false);
+          }
+        });
+      }
+
+      function updateLifelinesUI() {
+        const isMillion = PRIZE_LADDER[state.qIndex].q === 16;
+        el.skipCountSvgText.textContent = String(state.skipsLeft);
+        el.helpSkipBtn.disabled = isMillion || state.skipsLeft <= 0 || state.isLocked;
+        el.helpCardsBtn.disabled = isMillion || state.usedCards || state.isLocked;
+        el.helpAudienceBtn.disabled = isMillion || state.usedAudience || state.isLocked;
+        el.helpStudentsBtn.disabled = isMillion || state.usedStudents || state.isLocked;
+        el.helpGuruBtn.disabled = isMillion || state.usedGuruThisQ || state.coins < 20 || state.isLocked;
+        el.helpGenieBtn.disabled = isMillion || state.usedGenieThisQ || state.coins < 50 || state.isLocked;
+        el.stopGameBtn.disabled = state.isLocked;
+      }
+
+      /* =========================================================================
+         9. SELEÇÃO, CONFIRMAÇÃO ("TEM CERTEZA?") E SUSPENSE
+         ========================================================================= */
+      function selectOption(idx) {
+        if (state.isLocked || state.eliminatedOptions.has(idx)) return;
+        audio.playConfirmPromptSting();
+        state.selectedOption = idx;
+
+        el.optionRows.forEach((row, i) => {
+          row.classList.toggle('selected', i === idx);
+        });
+
+        const letter = ['A', 'B', 'C', 'D'][idx];
+        el.confirmPromptText.textContent = `Você escolheu a letra ${letter}. Tem certeza?`;
+        el.confirmBar.classList.add('visible');
+        hostSay(`Letra ${letter}. Tem certeza disso?`);
+      }
+
+      function cancelSelection() {
+        if (state.isLocked) return;
+        audio.playClick();
+        state.selectedOption = null;
+        state.isLocked = false;
+        el.optionRows.forEach(row => row.classList.remove('selected'));
+        el.confirmBar.classList.remove('visible');
+        updateLifelinesUI();
+        if (!state.timerInterval) startQuestionTimer(false);
+      }
+
+      function confirmAnswer() {
+        if (state.isLocked || state.selectedOption === null) return;
+        stopQuestionTimer();
+        state.isLocked = true;
+        el.confirmBar.classList.remove('visible');
+        updateLifelinesUI();
+
+        const chosenIdx = state.selectedOption;
+        const correctIdx = state.currentQuestion.correctIndex;
+        const chosenRow = el.optionRows[chosenIdx];
+
+        el.optionBtns.forEach(b => (b.disabled = true));
+        chosenRow.classList.remove('selected');
+        chosenRow.classList.add('suspense-blink');
+
+        const phrases = ['Vamos conferir...', 'Será que acertou?', 'Vamos ver...'];
+        const phrase = phrases[Math.floor(Math.random() * phrases.length)];
+        setLeoMood('suspense');
+        hostSay(phrase, 'suspense');
+        audio.startSuspense(2.6);
+
+        setTimeout(() => {
+          chosenRow.classList.remove('suspense-blink');
+
+          if (chosenIdx === correctIdx) {
+            chosenRow.classList.add('correct');
+            const step = PRIZE_LADDER[state.qIndex];
+            state.accumulatedPrize = step.prize;
+
+            // Recompensa de moedas por acerto (+10 moedas)
+            state.coins += 10;
+            updateCoinsUI();
+
+            const isMillion = step.q === 16;
+            audio.playCorrect(isMillion);
+            setLeoMood('celebrate');
+
+            if (isMillion) {
+              el.tvStage.classList.add('million-party');
+              startConfetti();
+              hostSay('Parabéns! Você é o mais novo milionário do Rumo ao Milhão!', 'celebrate');
+              setTimeout(() => finishGame('million'), 4800);
+            } else {
+              audio.playApplause(0.7);
+              hostSay(`Certa resposta! ${formatBRL(state.accumulatedPrize)} e mais 10 moedas!`, 'celebrate');
+              setTimeout(() => {
+                state.qIndex++;
+                const nextWarning = PRIZE_LADDER[state.qIndex].q === 16
+                  ? 'Pergunta do Milhão! Sem ajudas, sem pulo, e se errar perde tudo. '
+                  : '';
+                loadCurrentQuestion(nextWarning);
+              }, 2600);
+            }
+          } else {
+            chosenRow.classList.add('wrong');
+            el.optionRows[correctIdx].classList.add('correct');
+            audio.playWrong();
+
+            const isMillion = PRIZE_LADDER[state.qIndex].q === 16;
+            state.accumulatedPrize = isMillion ? 0 : Math.floor(state.accumulatedPrize / 2);
+
+            const correctLetter = ['A', 'B', 'C', 'D'][correctIdx];
+            hostSay(`Que pena! A correta era ${correctLetter}.`);
+            setTimeout(() => finishGame('wrong'), 3800);
+          }
+        }, 2600);
+      }
+
+      /* =========================================================================
+         10. SISTEMA DE AJUDAS (CARTAS, PLACAS, CONVIDADOS, PULAR, GURU, GÊNIO) E PARAR
+         ========================================================================= */
+      function openModal(title, bodyHTML) {
+        el.modalTitle.textContent = title;
+        el.modalBody.innerHTML = bodyHTML;
+        el.helpModal.classList.add('open');
+      }
+
+      function closeModal() {
+        el.helpModal.classList.remove('open');
+        if (el.gameScreen.classList.contains('active') && !el.endScreen.classList.contains('active')) {
+          const isSuspenseOrFinished = el.optionRows.some(r =>
+            r.classList.contains('suspense-blink') ||
+            r.classList.contains('correct') ||
+            r.classList.contains('wrong')
+          );
+          if (!isSuspenseOrFinished) {
+            state.isLocked = false;
+            updateLifelinesUI();
+            if (!state.timerInterval) startQuestionTimer(false);
+          }
+        }
+      }
+
+      // 1) CARTAS
+      function useCardsHelp() {
+        if (state.isLocked || state.usedCards || PRIZE_LADDER[state.qIndex].q === 16) return;
+        audio.playHelpCue('cards');
+        cancelSelection();
+
+        const deck = [
+          { rank: 'K', suit: '♠', label: 'Rei (0 eliminadas)', removeCount: 0, red: false },
+          { rank: 'A', suit: '♥', label: 'Ás (1 eliminada)', removeCount: 1, red: true },
+          { rank: '2', suit: '♣', label: 'Dois (2 eliminadas)', removeCount: 2, red: false },
+          { rank: '3', suit: '♦', label: 'Três (3 eliminadas)', removeCount: 3, red: true }
+        ];
+        for (let i = deck.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [deck[i], deck[j]] = [deck[j], deck[i]];
+        }
+
+        hostSay('Escolha uma das quatro cartas na mesa!');
+        openModal('🃏 Ajuda das Cartas', `
+          <p style="margin:0; font-size:0.92rem; color:#e2e8f0;">
+            Toque em uma carta para revelar quantas alternativas incorretas serão eliminadas (Rei = 0, Ás = 1, 2 ou 3):
+          </p>
+          <div class="cards-grid">
+            ${deck.map((_, i) => `
+              <button type="button" class="playing-card" data-card-idx="${i}">
+                <span style="font-size:1.7rem;">🂠</span>
+                <span class="card-sub" style="color:#fde047;">Carta ${i + 1}</span>
+              </button>
+            `).join('')}
+          </div>
+          <p id="cardResultNote" style="text-align:center; font-weight:700; color:#ffe066; min-height:22px; margin:0;"></p>
+        `);
+
+        const cardBtns = Array.from(el.modalBody.querySelectorAll('.playing-card'));
+        let picked = false;
+
+        cardBtns.forEach((btn, idx) => {
+          btn.addEventListener('click', () => {
+            if (picked) return;
+            picked = true;
+            state.usedCards = true;
+            updateLifelinesUI();
+            audio.playCardFlip();
+
+            cardBtns.forEach((b, i) => {
+              const c = deck[i];
+              b.classList.add('flipped');
+              if (c.red) b.classList.add('red-suit');
+              b.innerHTML = `<span class="card-rank">${c.rank}${c.suit}</span><span class="card-sub">${c.label}</span>`;
+              if (i !== idx) b.style.opacity = '0.55';
+            });
+
+            const chosenCard = deck[idx];
+            const wrongIndices = [0, 1, 2, 3].filter(
+              i => i !== state.currentQuestion.correctIndex && !state.eliminatedOptions.has(i)
+            );
+            for (let i = wrongIndices.length - 1; i > 0; i--) {
+              const j = Math.floor(Math.random() * (i + 1));
+              [wrongIndices[i], wrongIndices[j]] = [wrongIndices[j], wrongIndices[i]];
+            }
+
+            const toEliminate = wrongIndices.slice(0, chosenCard.removeCount);
+            toEliminate.forEach(optIdx => {
+              state.eliminatedOptions.add(optIdx);
+              el.optionRows[optIdx].classList.add('eliminated');
+            });
+
+            const msg = chosenCard.removeCount === 0
+              ? 'Você tirou o Rei! Nenhuma alternativa foi eliminada.'
+              : `Você tirou ${chosenCard.label}! Eliminamos ${toEliminate.length} alternativa(s) errada(s).`;
+
+            document.getElementById('cardResultNote').textContent = msg;
+            hostSay(msg);
+            setTimeout(closeModal, 2000);
+          });
+        });
+      }
+
+      // 2) PLACAS
+      function useAudienceHelp() {
+        if (state.isLocked || state.usedAudience || PRIZE_LADDER[state.qIndex].q === 16) return;
+        audio.playHelpCue('audience');
+        cancelSelection();
+        state.usedAudience = true;
+        updateLifelinesUI();
+
+        const level = PRIZE_LADDER[state.qIndex].level;
+        const correctIdx = state.currentQuestion.correctIndex;
+        const weights = [0, 0, 0, 0];
+        const correctWeight = level === 1 ? 66 : level === 2 ? 52 : 34;
+        let remaining = 100 - correctWeight;
+        const others = [0, 1, 2, 3].filter(i => i !== correctIdx && !state.eliminatedOptions.has(i));
+        weights[correctIdx] = correctWeight;
+
+        if (others.length > 0) {
+          others.forEach((optIdx, pos) => {
+            if (pos === others.length - 1) weights[optIdx] = remaining;
+            else {
+              const share = Math.floor(Math.random() * (remaining * 0.65));
+              weights[optIdx] = share;
+              remaining -= share;
+            }
+          });
+        } else {
+          weights[correctIdx] = 100;
+        }
+
+        const letters = ['A', 'B', 'C', 'D'];
+        openModal('📊 Placas da Plateia', `
+          <p style="margin:0; font-size:0.9rem; color:#e2e8f0;">
+            A plateia levantou suas placas! Veja o resultado da votação:
+          </p>
+          <div class="audience-bars">
+            ${letters.map((letChar, i) => `
+              <div class="bar-col">
+                <span class="bar-pct">${weights[i]}%</span>
+                <div class="bar-fill" style="height: ${Math.max(6, weights[i])}%;"></div>
+                <span class="bar-letter">${letChar}</span>
+              </div>
+            `).join('')}
+          </div>
+          <button type="button" id="closeAudienceModalBtn" class="btn-green-pill" style="width:100%;">Entendi</button>
+        `);
+        document.getElementById('closeAudienceModalBtn').onclick = closeModal;
+
+        const bestIdx = weights.indexOf(Math.max(...weights));
+        hostSay(`A plateia votou! A maioria escolheu a letra ${letters[bestIdx]} com ${weights[bestIdx]} por cento.`);
+      }
+
+      // 3) CONVIDADOS
+      function useStudentsHelp() {
+        if (state.isLocked || state.usedStudents || PRIZE_LADDER[state.qIndex].q === 16) return;
+        audio.playHelpCue('students');
+        cancelSelection();
+        state.usedStudents = true;
+        updateLifelinesUI();
+
+        const level = PRIZE_LADDER[state.qIndex].level;
+        const correctIdx = state.currentQuestion.correctIndex;
+        const available = [0, 1, 2, 3].filter(i => !state.eliminatedOptions.has(i));
+        const wrongAvail = available.filter(i => i !== correctIdx);
+        const letters = ['A', 'B', 'C', 'D'];
+
+        const guests = [
+          { name: 'Ana (Geografia)', initials: 'AN', acc: level === 1 ? 0.95 : level === 2 ? 0.80 : 0.62 },
+          { name: 'Bruno (Relações Int.)', initials: 'BR', acc: level === 1 ? 0.90 : level === 2 ? 0.72 : 0.50 },
+          { name: 'Carla (História)', initials: 'CA', acc: level === 1 ? 0.88 : level === 2 ? 0.68 : 0.45 }
+        ];
+
+        const guesses = guests.map(st => {
+          const isRight = Math.random() < st.acc || wrongAvail.length === 0;
+          const pick = isRight ? correctIdx : wrongAvail[Math.floor(Math.random() * wrongAvail.length)];
+          const phrase = isRight && level === 1 ? 'Tenho certeza absoluta!' : isRight ? 'Pelo que estudei, vou nessa.' : 'Estou em dúvida, mas acho que é essa.';
+          return { ...st, pick, phrase };
+        });
+
+        openModal('👥 Ajuda dos Convidados', `
+          <p style="margin:0; font-size:0.9rem; color:#e2e8f0;">
+            Confira os palpites dos três convidados do programa:
+          </p>
+          <div class="students-list">
+            ${guesses.map(g => `
+              <div class="student-card">
+                <div class="student-badge">${g.initials}</div>
+                <div>
+                  <strong style="display:block; font-size:0.92rem;">${g.name}</strong>
+                  <span style="font-size:0.8rem; color:#cbd5e1;">"${g.phrase}"</span>
+                </div>
+                <div class="student-guess">${letters[g.pick]}</div>
+              </div>
+            `).join('')}
+          </div>
+          <button type="button" id="closeStudentsModalBtn" class="btn-green-pill" style="width:100%;">Voltar à pergunta</button>
+        `);
+        document.getElementById('closeStudentsModalBtn').onclick = closeModal;
+
+        const speechSummary = guesses.map(g => `${g.name.split(' ')[0]} indica letra ${letters[g.pick]}`).join('. ');
+        hostSay(`Os convidados deram seus palpites: ${speechSummary}.`);
+      }
+
+      // 4) PULAR
+      function useSkipHelp() {
+        if (state.isLocked || state.skipsLeft <= 0 || PRIZE_LADDER[state.qIndex].q === 16) return;
+        audio.playClick();
+        cancelSelection();
+        state.skipsLeft--;
+        showToast(`Pergunta pulada! Restam ${state.skipsLeft} pulo(s).`);
+        loadCurrentQuestion('Tudo bem, vamos pular esta pergunta! ');
+      }
+
+      // 5) GURU (20 MOEDAS) — Analisa e indica a resposta mais provável com alta precisão
+      function useGuruHelp() {
+        if (state.isLocked || state.usedGuruThisQ || PRIZE_LADDER[state.qIndex].q === 16) return;
+        if (state.coins < 20) {
+          showToast('Você precisa de 20 moedas para consultar o Guru!');
+          return;
+        }
+        audio.playClick();
+        cancelSelection();
+
+        state.coins -= 20;
+        state.usedGuruThisQ = true;
+        updateCoinsUI();
+        updateLifelinesUI();
+
+        const correctIdx = state.currentQuestion.correctIndex;
+        const letters = ['A', 'B', 'C', 'D'];
+        const correctLetter = letters[correctIdx];
+        const correctText = state.currentQuestion.shuffledOptions[correctIdx];
+
+        const typeHints = {
+          flag: 'Analisando as cores, brasões e proporções desta bandeira',
+          capital: 'Consultando meus mapas políticos e registros oficiais de capitais',
+          country_of_capital: 'Cruzando coordenadas geográficas desta capital',
+          continent: 'Observando a divisão continental e a localização no globo',
+          brazil: 'Verificando a divisão regional e os estados brasileiros',
+          landmark: 'Pesquisando os principais monumentos e marcos naturais do mundo',
+          compare: 'Comparando os dados demográficos e territoriais oficiais'
+        };
+        const introHint = typeHints[state.currentQuestion.type] || 'Consultando minha enciclopédia geográfica';
+
+        openModal('🧙‍♂️ Conselho do Guru (-20 Moedas)', `
+          <div style="text-align:center; padding: 8px 4px;">
+            <p style="font-size:0.96rem; line-height:1.45; color:#f1f5f9; margin:0 0 12px;">
+              "${introHint}, tenho <strong>95% de certeza</strong> de que a resposta correta é a letra <strong>${correctLetter} (${escapeHtml(correctText)})</strong>!"
+            </p>
+            <div style="display:inline-block; padding:10px 24px; border-radius:16px; background:#22c55e; border:2.5px solid #ffffff; font-family:'Fredoka',sans-serif; font-size:1.35rem; font-weight:700; margin-bottom:14px;">
+              Indicação do Guru: Letra ${correctLetter}
+            </div>
+            <button type="button" id="closeGuruBtn" class="btn-green-pill" style="width:100%;">Obrigado, Guru!</button>
+          </div>
+        `);
+        document.getElementById('closeGuruBtn').onclick = closeModal;
+        hostSay(`O Guru analisou a questão e recomenda a letra ${correctLetter}: ${correctText}!`);
+      }
+
+      // 6) GÊNIO DA LÂMPADA (50 MOEDAS) — Concede o desejo de eliminar 2 erradas e revelar a certa
+      function useGenieHelp() {
+        if (state.isLocked || state.usedGenieThisQ || PRIZE_LADDER[state.qIndex].q === 16) return;
+        if (state.coins < 50) {
+          showToast('Você precisa de 50 moedas para invocar o Gênio!');
+          return;
+        }
+        audio.playMagicChime();
+        cancelSelection();
+
+        state.coins -= 50;
+        state.usedGenieThisQ = true;
+        updateCoinsUI();
+        updateLifelinesUI();
+
+        const correctIdx = state.currentQuestion.correctIndex;
+        const letters = ['A', 'B', 'C', 'D'];
+        const correctLetter = letters[correctIdx];
+        const correctText = state.currentQuestion.shuffledOptions[correctIdx];
+
+        // Elimina todas as alternativas incorretas restantes na tela
+        [0, 1, 2, 3].forEach(idx => {
+          if (idx !== correctIdx) {
+            state.eliminatedOptions.add(idx);
+            el.optionRows[idx].classList.add('eliminated');
+          }
+        });
+
+        openModal('🧞‍♂️ Desejo do Gênio (-50 Moedas)', `
+          <div style="text-align:center; padding: 8px 4px;">
+            <p style="font-size:1rem; line-height:1.45; color:#fff3b0; margin:0 0 12px;">
+              "Seu desejo é uma ordem! Eliminei todas as alternativas falsas da tela. A resposta verdadeira é a letra <strong>${correctLetter} (${escapeHtml(correctText)})</strong>!"
+            </p>
+            <div style="display:inline-block; padding:10px 24px; border-radius:16px; background:linear-gradient(180deg,#ffe066,#d97706); color:#1f1400; border:2.5px solid #ffffff; font-family:'Fredoka',sans-serif; font-size:1.35rem; font-weight:700; margin-bottom:14px;">
+              ✨ Resposta: Letra ${correctLetter}
+            </div>
+            <button type="button" id="closeGenieBtn" class="btn-green-pill" style="width:100%;">Marcar Resposta</button>
+          </div>
+        `);
+        document.getElementById('closeGenieBtn').onclick = () => {
+          closeModal();
+          selectOption(correctIdx);
+        };
+        hostSay(`O Gênio da Lâmpada realizou seu desejo e revelou a letra ${correctLetter}!`);
+      }
+
+      // PARAR O JOGO
+      function promptStopGame() {
+        if (state.isLocked) return;
+        audio.playClick();
+        cancelSelection();
+        openModal('🛑 Parar o Jogo?', `
+          <p style="margin:0 0 16px; font-size:0.98rem; line-height:1.45;">
+            Se você parar agora, encerra sua participação levando <strong>${formatBRL(state.accumulatedPrize)}</strong>. Deseja parar?
+          </p>
+          <div style="display:flex; gap:10px;">
+            <button type="button" id="confirmStopYes" class="btn-green-pill" style="flex:1;">Sim, Parar</button>
+            <button type="button" id="confirmStopNo" class="btn-secondary" style="flex:1;">Continuar</button>
+          </div>
+        `);
+        document.getElementById('confirmStopYes').onclick = () => {
+          closeModal();
+          audio.playStopOrEndCue(state.accumulatedPrize > 0);
+          hostSay(`Você decidiu parar e leva para casa ${formatBRL(state.accumulatedPrize)}!`);
+          finishGame('stop');
+        };
+        document.getElementById('confirmStopNo').onclick = closeModal;
+      }
+
+      /* =========================================================================
+         11. ENCERRAMENTO, CERTIFICADO E CONFETES
+         ========================================================================= */
+      function finishGame(reason) {
+        stopQuestionTimer();
+        state.isLocked = true;
+        audio.stopBgm();
+        const prize = state.accumulatedPrize;
+        const correctCount = reason === 'million' ? 16 : state.qIndex;
+
+        saveRankingEntry(state.playerName, prize, correctCount);
+        renderRankingLists();
+
+        el.briefcaseContainer.innerHTML = renderBriefcaseSVG(prize);
+        el.briefcaseContainer.classList.remove('opened');
+        setTimeout(() => el.briefcaseContainer.classList.add('opened'), 350);
+
+        if (reason === 'million') {
+          el.endHeadline.textContent = '🎉 MILIONÁRIO DO RUMO AO MILHÃO!';
+          el.endPrizeText.textContent = 'R$ 1.000.000';
+          el.goldBarsCaption.textContent = 'R$ 1.000.000 em barras de ouro!';
+          el.endHostQuote.textContent = `"Parabéns, ${state.playerName}! Você é o mais novo milionário do Rumo ao Milhão!"`;
+          setLeoMood('celebrate');
+        } else if (reason === 'stop') {
+          el.endHeadline.textContent = '👏 VOCÊ PAROU COM SABEDORIA!';
+          el.endPrizeText.textContent = formatBRL(prize);
+          el.goldBarsCaption.textContent = prize > 0 ? `${formatBRL(prize)} em barras de ouro!` : 'Maleta vazia — tente novamente!';
+          el.endHostQuote.textContent = `"Decisão prudente, ${state.playerName}! Você sai do palco com ${formatBRL(prize)}!"`;
+          setLeoMood('celebrate');
+        } else if (reason === 'timeout') {
+          el.endHeadline.textContent = '⏰ TEMPO ESGOTADO!';
+          el.endPrizeText.textContent = formatBRL(prize);
+          el.goldBarsCaption.textContent = prize > 0 ? `${formatBRL(prize)} em barras de ouro!` : 'O relógio zerou! Tente novamente.';
+          el.endHostQuote.textContent = `"O tempo acabou, ${state.playerName}! Fique atento ao relógio na próxima rodada!"`;
+          setLeoMood(null);
+        } else {
+          el.endHeadline.textContent = 'FIM DE JOGO!';
+          el.endPrizeText.textContent = formatBRL(prize);
+          el.goldBarsCaption.textContent = prize > 0 ? `${formatBRL(prize)} em barras de ouro!` : 'Que pena! Desta vez a maleta ficou vazia.';
+          el.endHostQuote.textContent = `"Valeu a coragem, ${state.playerName}! Continue praticando geografia para chegar ao milhão!"`;
+          setLeoMood(null);
+        }
+
+        el.endSummaryText.textContent = `Participante: ${state.playerName} • Acertos: ${correctCount} de 16 perguntas.`;
+
+        if (prize > 0) {
+          generateCertificate(state.playerName, prize, correctCount);
+          el.certificateWrap.classList.add('visible');
+          el.saveCertBtn.style.display = 'inline-flex';
+        } else {
+          el.certificateWrap.classList.remove('visible');
+          el.saveCertBtn.style.display = 'none';
+        }
+
+        switchScreen(el.endScreen);
+      }
+
+      function generateCertificate(playerName, prize, correctCount) {
+        const canvas = el.certificateCanvas;
+        const ctx = canvas.getContext('2d');
+        const w = canvas.width;
+        const h = canvas.height;
+
+        const bgGrad = ctx.createLinearGradient(0, 0, w, h);
+        bgGrad.addColorStop(0, '#163eb5');
+        bgGrad.addColorStop(0.5, '#0e2982');
+        bgGrad.addColorStop(1, '#081854');
+        ctx.fillStyle = bgGrad;
+        ctx.fillRect(0, 0, w, h);
+
+        ctx.strokeStyle = '#ffffff';
+        ctx.lineWidth = 10;
+        ctx.strokeRect(24, 24, w - 48, h - 48);
+        ctx.strokeStyle = '#ffe066';
+        ctx.lineWidth = 4;
+        ctx.strokeRect(40, 40, w - 80, h - 80);
+
+        ctx.textAlign = 'center';
+        ctx.fillStyle = '#ffe066';
+        ctx.font = 'bold 24px Montserrat, sans-serif';
+        ctx.fillText('CERTIFICADO OFICIAL DE CONQUISTA', w / 2, 108);
+
+        ctx.fillStyle = '#ffffff';
+        ctx.font = '900 50px Montserrat, sans-serif';
+        ctx.fillText('RUMO AO MILHÃO', w / 2, 168);
+
+        ctx.fillStyle = '#e2e8f0';
+        ctx.font = '24px Inter, sans-serif';
+        ctx.fillText('Certificamos que', w / 2, 232);
+
+        ctx.fillStyle = '#ffe066';
+        ctx.font = '900 46px Montserrat, sans-serif';
+        ctx.fillText(playerName.toUpperCase(), w / 2, 294);
+
+        ctx.fillStyle = '#f8fafc';
+        ctx.font = '24px Inter, sans-serif';
+        ctx.fillText(`acertou ${correctCount} de 16 perguntas de Geografia e conquistou o prêmio de`, w / 2, 352);
+
+        ctx.fillStyle = '#4ade80';
+        ctx.font = '900 54px Montserrat, sans-serif';
+        ctx.fillText(
+          prize === 1000000 ? 'R$ 1.000.000 EM BARRAS DE OURO' : `${formatBRL(prize)} EM BARRAS DE OURO`,
+          w / 2,
+          426
+        );
+
+        const todayStr = new Date().toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' });
+        ctx.fillStyle = '#cbd5e1';
+        ctx.font = '20px Inter, sans-serif';
+        ctx.fillText(`Emitido em ${todayStr}`, w / 2, 492);
+
+        ctx.strokeStyle = '#ffe066';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(w / 2 - 170, 565);
+        ctx.lineTo(w / 2 + 170, 565);
+        ctx.stroke();
+
+        ctx.fillStyle = '#ffe066';
+        ctx.font = 'italic bold 24px Georgia, serif';
+        ctx.fillText('Professor Leo', w / 2, 555);
+        ctx.fillStyle = '#e2e8f0';
+        ctx.font = '16px Inter, sans-serif';
+        ctx.fillText('Apresentador • Rumo ao Milhão', w / 2, 592);
+      }
+
+      async function saveOrShareCertificate() {
+        const canvas = el.certificateCanvas;
+        canvas.toBlob(async (blob) => {
+          if (!blob) return;
+          const fileName = `certificado-rumo-ao-milhao-${Date.now()}.png`;
+          const file = new File([blob], fileName, { type: 'image/png' });
+          if (navigator.canShare && navigator.canShare({ files: [file] })) {
+            try {
+              await navigator.share({
+                title: 'Meu Certificado: Rumo ao Milhão',
+                text: `Conquistei ${formatBRL(state.accumulatedPrize)} no jogo Rumo ao Milhão!`,
+                files: [file]
+              });
+              return;
+            } catch (err) {}
+          }
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = fileName;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          setTimeout(() => URL.revokeObjectURL(url), 1500);
+          showToast('Certificado salvo como imagem!');
+        }, 'image/png');
+      }
+
+      let confettiAnimId = null;
+      function startConfetti() {
+        const canvas = el.confettiCanvas;
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        const pieces = Array.from({ length: 130 }, () => ({
+          x: Math.random() * canvas.width,
+          y: Math.random() * -canvas.height,
+          w: 8 + Math.random() * 8,
+          h: 5 + Math.random() * 6,
+          vy: 2.2 + Math.random() * 3.8,
+          vx: (Math.random() - 0.5) * 2.2,
+          rot: Math.random() * Math.PI * 2,
+          vrot: (Math.random() - 0.5) * 0.14,
+          color: ['#ffe680', '#f5b82e', '#ffffff', '#fbbf24', '#38bdf8'][Math.floor(Math.random() * 5)]
+        }));
+
+        function loop() {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          pieces.forEach(p => {
+            p.x += p.vx;
+            p.y += p.vy;
+            p.rot += p.vrot;
+            if (p.y > canvas.height + 20) { p.y = -15; p.x = Math.random() * canvas.width; }
+            ctx.save();
+            ctx.translate(p.x, p.y);
+            ctx.rotate(p.rot);
+            ctx.fillStyle = p.color;
+            ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+            ctx.restore();
+          });
+          confettiAnimId = requestAnimationFrame(loop);
+        }
+        cancelAnimationFrame(confettiAnimId);
+        loop();
+      }
+
+      function stopConfetti() {
+        cancelAnimationFrame(confettiAnimId);
+        const ctx = el.confettiCanvas.getContext('2d');
+        ctx.clearRect(0, 0, el.confettiCanvas.width, el.confettiCanvas.height);
+      }
+
+      /* =========================================================================
+         12. INICIALIZAÇÃO DE PARTIDA E EVENTOS DE UI / TECLADO
+         ========================================================================= */
+      function startNewMatch() {
+        audio.unlock();
+        voice.unlock();
+        audio.isPlaying = true;
+        audio.playIntroFanfare();
+
+        stopConfetti();
+        el.tvStage.classList.remove('million-party');
+
+        const typedName = el.playerNameInput.value.trim();
+        state.playerName = typedName || 'Participante';
+        state.qIndex = 0;
+        state.accumulatedPrize = 0;
+        if (state.coins < 100) state.coins = 100;
+        state.usedQuestionIndices.clear();
+        state.selectedOption = null;
+        state.eliminatedOptions.clear();
+        state.skipsLeft = 3;
+        state.usedCards = false;
+        state.usedAudience = false;
+        state.usedStudents = false;
+
+        updateCoinsUI();
+        switchScreen(el.gameScreen);
+        loadCurrentQuestion(`Bem-vindo ao Rumo ao Milhão, ${state.playerName}! `);
+      }
+
+      function updateVoiceButtonsUI() {
+        el.lobbyVoiceBtn.textContent = voice.enabled ? '🔊 Voz: Ligada' : '🔇 Voz: Desligada';
+        el.toggleVoiceBtn.textContent = voice.enabled ? '🔊' : '🔇';
+        if (!voice.enabled) voice.stop();
+      }
+
+      el.lobbyVoiceBtn.addEventListener('click', () => {
+        voice.enabled = !voice.enabled;
+        updateVoiceButtonsUI();
+      });
+
+      el.toggleVoiceBtn.addEventListener('click', () => {
+        voice.enabled = !voice.enabled;
+        updateVoiceButtonsUI();
+        showToast(voice.enabled ? 'Voz ativada' : 'Voz silenciada');
+      });
+
+      el.repeatSpeechBtn.addEventListener('click', () => {
+        audio.unlock();
+        if (!voice.enabled) { voice.enabled = true; updateVoiceButtonsUI(); }
+        voice.repeat((isSpeaking) => setLeoMood(isSpeaking ? 'speaking' : null));
+      });
+
+      el.lobbyVolumeSlider.addEventListener('input', (e) => audio.setVolume(Number(e.target.value)));
+
+      el.toggleMuteAudioBtn.addEventListener('click', () => {
+        const muted = audio.toggleMute();
+        el.toggleMuteAudioBtn.textContent = muted ? '🔇' : '🎵';
+        showToast(muted ? 'Música e efeitos mutados' : 'Música e efeitos ligados');
+      });
+
+      el.startGameBtn.addEventListener('click', startNewMatch);
+      el.playAgainBtn.addEventListener('click', startNewMatch);
+      el.backToLobbyBtn.addEventListener('click', () => {
+        stopQuestionTimer();
+        voice.stop();
+        audio.stopBgm();
+        stopConfetti();
+        el.tvStage.classList.remove('million-party');
+        switchScreen(el.startScreen);
+      });
+
+      el.optionBtns.forEach((btn, idx) => btn.addEventListener('click', () => selectOption(idx)));
+      el.confirmYesBtn.addEventListener('click', confirmAnswer);
+      el.confirmNoBtn.addEventListener('click', cancelSelection);
+
+      // 6 Botões de Ajuda + Parar + Bloco de Notas (Escada de Prêmios)
+      el.helpCardsBtn.addEventListener('click', useCardsHelp);
+      el.helpAudienceBtn.addEventListener('click', useAudienceHelp);
+      el.helpStudentsBtn.addEventListener('click', useStudentsHelp);
+      el.helpSkipBtn.addEventListener('click', useSkipHelp);
+      el.helpGuruBtn.addEventListener('click', useGuruHelp);
+      el.helpGenieBtn.addEventListener('click', useGenieHelp);
+      el.stopGameBtn.addEventListener('click', promptStopGame);
+
+      el.openLadderNotesBtn.addEventListener('click', () => {
+        audio.playClick();
+        openModal('📝 Escada de Prêmios (16 Níveis)', `
+          <ul class="ladder-list" style="max-height: 62dvh; overflow-y: auto;">
+            ${buildLadderHTML()}
+          </ul>
+        `);
+      });
+
+      el.coinsInfoBtn.addEventListener('click', () => {
+        showToast(`Você possui ${state.coins} moedas! Ganhe +10 a cada acerto.`);
+      });
+
+      el.closeModalBtn.addEventListener('click', closeModal);
+      el.helpModal.addEventListener('click', (e) => { if (e.target === el.helpModal) closeModal(); });
+      el.saveCertBtn.addEventListener('click', saveOrShareCertificate);
+
+      document.addEventListener('keydown', (e) => {
+        if (!el.gameScreen.classList.contains('active')) return;
+        if (el.helpModal.classList.contains('open')) {
+          if (e.key === 'Escape') closeModal();
+          return;
+        }
+        const key = e.key.toUpperCase();
+        if (['A', 'B', 'C', 'D'].includes(key)) {
+          selectOption(['A', 'B', 'C', 'D'].indexOf(key));
+        } else if (e.key === 'Enter' && el.confirmBar.classList.contains('visible')) {
+          e.preventDefault();
+          confirmAnswer();
+        } else if (e.key === 'Escape' && el.confirmBar.classList.contains('visible')) {
+          e.preventDefault();
+          cancelSelection();
+        }
+      });
+
+      updateCoinsUI();
+      renderRankingLists();
+    })();
+  </script>
+</body>
+</html>
